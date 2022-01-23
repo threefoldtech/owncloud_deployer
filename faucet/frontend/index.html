@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Owncloud faucet</title>
+</head>
+
+<body>
+    <div class="content">
+        <h2>Welcome to Owncloud faucet</h2>
+        <button id="submit" type="button" class="button">Submit</button>
+
+    </div>
+
+</body>
+<script type="text/javascript">
+    document.getElementById("submit").onclick = function () {
+        location.href = "/faucet/api/submit";
+    };
+</script>
+<style>
+    .content {
+        line-height: 200px;
+        height: 200px;
+        text-align: center;
+    }
+
+
+    .button {
+        margin: 16px;
+        padding: 16px;
+        background-color: darkblue;
+        color: aliceblue;
+        border-radius: 4px;
+        font-size: 12px
+    }
+</style>
+
+</html>

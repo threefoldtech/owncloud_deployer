@@ -1,0 +1,47 @@
+<style type="text/css">
+    table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    td,
+    th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #dddddd;
+    }
+
+    th.index {
+        width: 5%
+    }
+</style>
+
+
+<h2>Requests</h2>
+<br />
+
+<div>
+    <table width="100%">
+        <tr>
+            <th class="index">#</th>
+            <th>Name</th>
+            <th>Wallet Address</th>
+            <th>Submission time</th>
+        </tr>
+        {% for user in users %}
+        <tr>
+            <th class="index">{{users.index(user) + 1}}</th>
+            <th>{{user.tname}}</th>
+            <th>{{user.wallet_address}}</th>
+            <th>{{user.time}}</th>
+        </tr>
+        {% endfor %}
+
+    </table>
+
+</div>
