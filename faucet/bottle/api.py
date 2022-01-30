@@ -59,6 +59,7 @@ def names():
     user_info = j.data.serializers.json.loads(get_user_info())
     username = j.data.text.removesuffix(user_info.get("username"), ".3bot")
     wallet_address = user_info.get("walletAddress")
+    email = user_info.get("email")
 
     if username in user_model.list_all():
         return HTTPResponse(
@@ -71,6 +72,8 @@ def names():
     user.tname = username
     user.wallet_address = wallet_address
     user.time = j.data.time.utcnow().timestamp
+    user.status = "pending"
+    user.email = email
     user.save()
     return HTTPResponse(
         f"Thanks for submission, Request will be processed soon.",
