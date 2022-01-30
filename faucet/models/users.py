@@ -1,4 +1,12 @@
+from enum import Enum
 from jumpscale.core.base import Base, fields
+
+
+class UserStatus(Enum):
+    NEW = "NEW"
+    PENDING = "PENDING"
+    DONE = "DONE"
+    FAILURE = "FAILURE"
 
 
 class UserModel(Base):

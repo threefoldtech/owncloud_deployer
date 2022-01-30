@@ -1,11 +1,12 @@
+from crypt import methods
 import csv
 
 from jumpscale.core.base import StoredFactory
 from jumpscale.loader import j
 from jumpscale.packages.auth.bottle.auth import admin_only, get_user_info, login_required
-from faucet.models.users import UserModel
+from faucet.models.users import UserModel, UserStatus
 
-from bottle import Bottle, HTTPResponse, static_file
+from bottle import Bottle, request, HTTPResponse, static_file
 
 app = Bottle()
 user_model = StoredFactory(UserModel)
@@ -15,10 +16,12 @@ templates_path = j.sals.fs.join_paths(j.sals.fs.dirname(__file__), "templates")
 env = j.tools.jinja2.get_env(templates_path)
 
 
-@app.route("/api/result/get")
+@app.route("/api/requests", methods=["GET"])
 @login_required
 @admin_only
-def history():
+def list_users():
+    """List all users for admin
+    """
     users = []
     for user_name in user_model.list_all():
         user = user_model.get(user_name)
@@ -26,10 +29,61 @@ def history():
     return env.get_template("requests_history.html").render(users=users)
 
 
-@app.route("/api/result/export")
+@app.route("/api/requests", methods=["POST"])
+@login_required
+def create_user():
+    """Create new instance for user if new
+    - return 409 if user has registered before
+    """
+    user_info = j.data.serializers.json.loads(get_user_info())
+    username = j.data.text.removesuffix(user_info.get("username"), ".3bot")
+
+    data = j.data.serializers.json.loads(request.body.read())
+    email = data.get("email", user_info.get("email"))
+
+    if username in user_model.list_all():
+        return HTTPResponse(
+            f"user {username} has already submitted request before",
+            status=409,
+            headers={"Content-Type": "application/json"},
+        )
+
+    user = user_model.get(username)
+    user.tname = username
+    user.email = email
+    user.status = UserStatus.NEW
+    user.time = j.data.time.utcnow().timestamp
+    user.save()
+    return HTTPResponse(
+        f"Thanks for submission, Request will be processed soon.",
+        status=200,
+        headers={"Content-Type": "application/json"},
+    )
+
+
+@app.route("/api/deployment", methods=["POST"])
+@login_required
+@admin_only
+def deploy_instances():
+    """get json file for approved users and generate terraform files for them
+    """
+    pass
+
+
+@app.route("/api/balance", methods=["GET"])
+@login_required
+@admin_only
+def get_balance():
+    """get the main wallet current balance
+    """
+    pass
+
+@app.route("/api/requests/export")
 @login_required
 @admin_only
 def export():
+    """Export saved users as csv 
+    """
     users = []
     for user_name in user_model.list_all():
         order = user_model.get(user_name)
@@ -51,31 +105,3 @@ def export():
             writer.writerow(user[k] for k in keys)
 
     return static_file(filename, root=path, download=filename)
-
-
-@app.route("/api/submit")
-@login_required
-def names():
-    user_info = j.data.serializers.json.loads(get_user_info())
-    username = j.data.text.removesuffix(user_info.get("username"), ".3bot")
-    email = user_info.get("email")
-
-    if username in user_model.list_all():
-        return HTTPResponse(
-            f"user {username} has already submitted request before",
-            status=409,
-            headers={"Content-Type": "application/json"},
-        )
-
-    user = user_model.get(username)
-    user.tname = username
-    user.email = email
-    user.status = "pending"
-    user.time = j.data.time.utcnow().timestamp
-    user.save()
-    return HTTPResponse(
-        f"Thanks for submission, Request will be processed soon.",
-        status=200,
-        headers={"Content-Type": "application/json"},
-    )
-
