@@ -22,6 +22,6 @@ const ownCloudClient = Axios.create({
 
 export default {
     sendMails(email) {
-        return ownCloudClient.post('/', { email: email })
+        return ownCloudClient.post('/requests', { email: email })
     },
 }
