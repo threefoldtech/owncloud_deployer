@@ -20,7 +20,7 @@ export default {
   data() {
     return {
       headers: [
-        { text: "Name", value: "name" },
+        { text: "Name", value: "tname" },
         { text: "Email", value: "email" },
         { text: "Status", value: "status" },
         { text: "Time", value: "time" },

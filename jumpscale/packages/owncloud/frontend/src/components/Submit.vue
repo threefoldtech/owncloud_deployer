@@ -108,7 +108,7 @@ export default {
       Service.sendMails(this.email)
         .then((response) => {
           this.dialog = true;
-          this.message = response.status;
+          this.message = response.data;
         })
         .catch((error) => {
           this.dialog = true;
