@@ -1,4 +1,3 @@
-from crypt import methods
 import csv
 
 from jumpscale.core.base import StoredFactory
@@ -26,7 +25,11 @@ def list_users():
     for user_name in user_model.list_all():
         user = user_model.get(user_name)
         users.append(user)
-    return env.get_template("requests_history.html").render(users=users)
+    return HTTPResponse(
+        users,
+        status=200,
+        headers={"Content-Type": "application/json"},
+    )
 
 
 @app.route("/api/requests", methods=["POST"])
@@ -67,8 +70,24 @@ def create_user():
 def deploy_instances():
     """get json file for approved users and generate terraform files for them
     """
-    pass
+    balance = j.tools.http.get("http://localhost:3001/balance").json().get("balance")
+    if balance < 1000:
+        return HTTPResponse(
+        f"Wallet balance is less than 1000 TFT please add more TFTs in the wallet and re-deploy",
+        status=403,
+        headers={"Content-Type": "application/json"},
+    )
+    users = j.data.serializers.json.loads(request.body.read())
+    for username in users:
+        user = user_model.get(username)
+        user.status = UserStatus.DONE
+        user.save()
 
+    return HTTPResponse(
+        {"success": True},
+        status=201,
+        headers={"Content-Type": "application/json"},
+    )
 
 @app.route("/api/balance", methods=["GET"])
 @login_required
@@ -76,7 +95,12 @@ def deploy_instances():
 def get_balance():
     """get the main wallet current balance
     """
-    pass
+    balance = j.tools.http.get("http://localhost:3001/balance").json()
+    return HTTPResponse(
+        balance,
+        status=200,
+        headers={"Content-Type": "application/json"},
+    )
 
 @app.route("/api/requests/export")
 @login_required
