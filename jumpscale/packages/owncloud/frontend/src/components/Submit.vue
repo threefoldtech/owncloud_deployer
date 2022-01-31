@@ -64,7 +64,7 @@
             <v-btn
               :disabled="!valid"
               class="mr-4 bg-blue white--text"
-              @click="validate"
+              @click="submit"
             >
               Submit
             </v-btn>
@@ -76,10 +76,12 @@
 </template>
 
 <script>
+import Service from "../services/Services";
+
 export default {
   data: () => ({
     title: "Welcome to Owncloud Free Deployment",
-    valid: true,
+    valid: false,
     email: "",
     emailRules: [
       (v) => !!v || "E-mail is required",
@@ -92,6 +94,24 @@ export default {
   methods: {
     validate() {
       this.$refs.form.validate();
+    },
+    submit() {
+      this.validate();
+      Service.sendMails(this.email)
+        .then((response) => {
+          console.log("response:" + response);
+          this.valid = true;
+        })
+        .catch((error) => {
+          console.log("error:" + error);
+          if (error.response.status == 503) {
+            console.log(error.response.data);
+          } else if (error.response.status == 401) {
+            console.log("Please contact Adminstrator");
+          } else {
+            console.log("Error! Could not reach the API. " + error);
+          }
+        });
     },
   },
   computed: {
