@@ -69,7 +69,7 @@
           <template>
             <v-card>
               <v-card-text>
-                <div class="text-h2 pa-12">{{ message }}</div>
+                <div class="text-h5 pa-12">{{ message }}</div>
               </v-card-text>
               <v-card-actions class="justify-end">
                 <v-btn text @click="dialog = false">Close</v-btn>
@@ -112,7 +112,7 @@ export default {
         })
         .catch((error) => {
           this.dialog = true;
-          this.message = error.status;
+          this.message = error.response.data;
         });
     },
   },
