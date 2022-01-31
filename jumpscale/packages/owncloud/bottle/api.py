@@ -59,7 +59,7 @@ def create_user():
     user.save()
     return HTTPResponse(
         f"Thanks for submission, Request will be processed soon.",
-        status=200,
+        status=201,
         headers={"Content-Type": "application/json"},
     )
 
@@ -85,7 +85,7 @@ def deploy_instances():
 
     return HTTPResponse(
         {"success": True},
-        status=201,
+        status=200,
         headers={"Content-Type": "application/json"},
     )
 
