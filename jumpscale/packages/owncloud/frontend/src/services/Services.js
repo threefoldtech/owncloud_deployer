@@ -10,18 +10,11 @@ const ownCloudClient = Axios.create({
     }
 })
 
-// const apiClient = Axios.create({
-//     baseURL: '/api',
-//     withCredentials: true,
-//     headers: {
-//         Accept: 'application/json',
-//         'Content-Type': 'application/json',
-//         'Access-Control-Allow-Origin': '*'
-//     }
-// })
-
 export default {
     sendMails(email) {
         return ownCloudClient.post('/requests', { email: email })
     },
+    getRequests() {
+        return ownCloudClient.get('/requests')
+    }
 }
