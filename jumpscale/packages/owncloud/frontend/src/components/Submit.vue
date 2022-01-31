@@ -29,13 +29,8 @@
           </v-card-title>
         </v-card>
       </v-col>
-      <v-col
-        cols="6"
-        md="7"
-        class="d-flex pa-md-16"
-        style="flex-direction: column"
-      >
-        <v-card class="ma-md-16 mx-lg-auto align-center flex-grow-1">
+      <v-col cols="6" md="7" class="d-flex" style="flex-direction: column">
+        <v-card class="ma-md-16 pa-md-16 mx-lg-auto align-center flex-grow-1">
           <p>
             Please enter your email to get creds and domain for you instance on.
             If not provided email TF connect will be used.
@@ -47,12 +42,6 @@
               label="E-mail"
               required
             ></v-text-field>
-            <v-input
-              v-if="sent"
-              :success-messages="['Mail sent successfully!']"
-              success
-            >
-            </v-input>
 
             <v-checkbox
               v-model="checkbox"
@@ -71,6 +60,24 @@
           </v-form>
         </v-card>
       </v-col>
+      <v-col cols="auto">
+        <v-dialog
+          transition="dialog-top-transition"
+          v-model="dialog"
+          max-width="600"
+        >
+          <template>
+            <v-card>
+              <v-card-text>
+                <div class="text-h2 pa-12">{{ message }}</div>
+              </v-card-text>
+              <v-card-actions class="justify-end">
+                <v-btn text @click="dialog = false">Close</v-btn>
+              </v-card-actions>
+            </v-card>
+          </template>
+        </v-dialog>
+      </v-col>
     </v-row>
   </v-container>
 </template>
@@ -88,7 +95,8 @@ export default {
       (v) => /.+@.+\..+/.test(v) || "E-mail must be valid",
     ],
     checkbox: false,
-    sent: false,
+    dialog: false,
+    message: "",
   }),
 
   methods: {
@@ -99,18 +107,12 @@ export default {
       this.validate();
       Service.sendMails(this.email)
         .then((response) => {
-          console.log("response:" + response);
-          this.valid = true;
+          this.dialog = true;
+          this.message = response.status;
         })
         .catch((error) => {
-          console.log("error:" + error);
-          if (error.response.status == 503) {
-            console.log(error.response.data);
-          } else if (error.response.status == 401) {
-            console.log("Please contact Adminstrator");
-          } else {
-            console.log("Error! Could not reach the API. " + error);
-          }
+          this.dialog = true;
+          this.message = error.status;
         });
     },
   },
