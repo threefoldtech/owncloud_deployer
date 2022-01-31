@@ -6,7 +6,7 @@ frontend = "/owncloud"
 [[static_dirs]]
 name = "frontend"
 path_url = ""
-path_location = "frontend/public/"
+path_location = "frontend/dist/"
 index = "index.html"
 spa = false
 
