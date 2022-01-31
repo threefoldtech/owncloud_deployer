@@ -42,7 +42,9 @@ def create_user():
     username = j.data.text.removesuffix(user_info.get("username"), ".3bot")
 
     data = j.data.serializers.json.loads(request.body.read())
-    email = data.get("email", user_info.get("email"))
+    email = data.get("email")
+    if email == "":
+        email = user_info.get("email")
 
     if username in user_model.list_all():
         return HTTPResponse(
