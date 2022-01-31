@@ -61,6 +61,6 @@ Example response
 }
 ```
 
-### `/owncloud/api/export` [GET] (admin only)
+### `/owncloud/api/requests/export` [GET] (admin only)
 
 - Download a copy of all registered users as csv
