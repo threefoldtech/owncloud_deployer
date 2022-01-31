@@ -12,5 +12,5 @@ class UserStatus(Enum):
 class UserModel(Base):
     tname = fields.String()
     email = fields.Email()
-    status = fields.String()
+    status = fields.Enum(UserStatus)
     time = fields.DateTime()

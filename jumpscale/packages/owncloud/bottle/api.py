@@ -3,7 +3,7 @@ import csv
 from jumpscale.core.base import StoredFactory
 from jumpscale.loader import j
 from jumpscale.packages.auth.bottle.auth import admin_only, get_user_info, login_required
-from faucet.models.users import UserModel, UserStatus
+from owncloud.models.users import UserModel, UserStatus
 
 from bottle import Bottle, request, HTTPResponse, static_file
 
@@ -15,7 +15,7 @@ templates_path = j.sals.fs.join_paths(j.sals.fs.dirname(__file__), "templates")
 env = j.tools.jinja2.get_env(templates_path)
 
 
-@app.route("/api/requests", methods=["GET"])
+@app.route("/api/requests", method=["GET"])
 @login_required
 @admin_only
 def list_users():
@@ -24,15 +24,15 @@ def list_users():
     users = []
     for user_name in user_model.list_all():
         user = user_model.get(user_name)
-        users.append(user)
+        users.append(user.to_dict())
     return HTTPResponse(
-        users,
+        j.data.serializers.json.dumps(users),
         status=200,
         headers={"Content-Type": "application/json"},
     )
 
 
-@app.route("/api/requests", methods=["POST"])
+@app.route("/api/requests", method=["POST"])
 @login_required
 def create_user():
     """Create new instance for user if new
@@ -64,14 +64,14 @@ def create_user():
     )
 
 
-@app.route("/api/deployment", methods=["POST"])
+@app.route("/api/deployment", method=["POST"])
 @login_required
 @admin_only
 def deploy_instances():
     """get json file for approved users and generate terraform files for them
     """
     balance = j.tools.http.get("http://localhost:3001/balance").json().get("balance")
-    if balance < 1000:
+    if float(balance) < 1000:
         return HTTPResponse(
         f"Wallet balance is less than 1000 TFT please add more TFTs in the wallet and re-deploy",
         status=403,
@@ -89,7 +89,7 @@ def deploy_instances():
         headers={"Content-Type": "application/json"},
     )
 
-@app.route("/api/balance", methods=["GET"])
+@app.route("/api/balance", method=["GET"])
 @login_required
 @admin_only
 def get_balance():
