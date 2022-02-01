@@ -16,5 +16,8 @@ export default {
     },
     getRequests() {
         return ownCloudClient.get('/requests')
+    },
+    getBalance() {
+        return ownCloudClient.get('/balance')
     }
 }

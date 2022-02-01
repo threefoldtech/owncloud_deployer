@@ -1,12 +1,14 @@
 <template>
   <div>
     <h1 class="pa-5">Requests</h1>
+    <BalanceCard />
     <v-data-table
+      class="ma-5"
       :headers="headers"
       :items="requests"
+      v-model="selected"
+      item-key="name"
       :items-per-page="5"
-      :loading="loading"
-      loading-text="Loading... Please wait"
     >
       <template v-slot:item.email="{ item }">{{
         item.email == "" ? "-" : item.email
@@ -17,8 +19,8 @@
         </td>
       </template>
       <template v-slot:item.time="{ item }">{{ time(item.time) }}</template>
-      <template v-slot:item.selected="{ item }">
-        <v-checkbox v-model="item.selected"></v-checkbox>
+      <template v-slot:item.admin_selection="{ item }">
+        <v-checkbox v-model="item.admin_selection" />
       </template>
     </v-data-table>
     <div class="text-right pt-2 mt-10">
@@ -36,9 +38,13 @@
 </template>
 
 <script>
+import BalanceCard from "@/components/BalanceCard.vue";
 import Service from "../services/Services";
 import moment from "moment";
 export default {
+  components: {
+    BalanceCard,
+  },
   data() {
     return {
       headers: [
@@ -47,7 +53,7 @@ export default {
         { text: "Email", value: "email" },
         { text: "Status", value: "status" },
         { text: "Time", value: "time" },
-        { text: "Admin Selection", value: "selected" },
+        { text: "Admin Selection", value: "admin_selection", sortable: false },
       ],
       requests: [],
       loading: true,
@@ -82,15 +88,15 @@ export default {
   color: #fff;
 }
 .v-chip.NEW {
-  background-color: #2dccff;
+  background-color: #2dccff !important;
 }
 .v-chip.PENDING {
-  background-color: #9ea7ad;
+  background-color: #9ea7ad !important;
 }
 .v-chip.DONE {
-  background-color: #56f000;
+  background-color: #56f000 !important;
 }
 .v-chip.FAILURE {
-  background-color: #ff3838;
+  background-color: #ff3838 !important;
 }
 </style>
