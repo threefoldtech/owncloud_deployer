@@ -89,10 +89,7 @@ export default {
     title: "Welcome to Owncloud Free Deployment",
     valid: false,
     email: "",
-    emailRules: [
-      (v) => !!v || "E-mail is required",
-      (v) => /.+@.+\..+/.test(v) || "E-mail must be valid",
-    ],
+    emailRules: [(v) => /.+@.+\..+/.test(v) || "E-mail must be valid"],
     checkbox: false,
     dialog: false,
     message: "",

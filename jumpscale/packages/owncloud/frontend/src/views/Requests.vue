@@ -4,13 +4,16 @@
     <BalanceCard />
     <h4 class="h4 pa-5">Requests:</h4>
     <v-data-table
-      class="ma-5"
+      class="ma-5 elevation-1"
       :headers="headers"
       :items="requests"
-      v-model="selected"
       item-key="name"
+      show-select
+      :single-select="singleSelect"
+      v-model="selected"
       :items-per-page="5"
     >
+      <template v-slot:item.id="{ item }">{{ item.index }}</template>
       <template v-slot:item.email="{ item }">{{
         item.email == "" ? "-" : item.email
       }}</template>
@@ -20,9 +23,6 @@
         </td>
       </template>
       <template v-slot:item.time="{ item }">{{ time(item.time) }}</template>
-      <template v-slot:item.admin_selection="{ item }">
-        <v-checkbox v-model="item.admin_selection" />
-      </template>
     </v-data-table>
     <div class="text-center pt-2 mt-10">
       <v-btn class="mr-2 bg-blue white--text"
@@ -56,8 +56,13 @@ export default {
         { text: "Email", value: "email" },
         { text: "Status", value: "status" },
         { text: "Time", value: "time" },
-        { text: "Admin Selection", value: "admin_selection", sortable: false },
+        {
+          text: "Admin Selection",
+          value: "data-table-select",
+          sortable: false,
+        },
       ],
+      singleSelect: false,
       requests: [],
       loading: true,
       selected: [],
