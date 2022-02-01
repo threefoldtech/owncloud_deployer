@@ -1,13 +1,25 @@
 <template>
   <div>
-    <h1 class="pa-5">Requests</h1>
+    <h1 class="pa-5">Requests {{ selected }}</h1>
     <v-data-table
+      v-model="selected"
+      show-select
       :headers="headers"
       :items="requests"
       :items-per-page="5"
       :loading="loading"
       loading-text="Loading... Please wait"
     >
+      <template v-slot:item.id="{ item }">
+        {{
+          requests.length -
+          requests
+            .map(function (x) {
+              return x.id;
+            })
+            .indexOf(item.id)
+        }}
+      </template>
       <template v-slot:item.email="{ item }">{{
         item.email == "" ? "-" : item.email
       }}</template>
@@ -27,13 +39,16 @@ export default {
   data() {
     return {
       headers: [
+        { text: "#", value: "id" },
         { text: "Name", value: "tname" },
         { text: "Email", value: "email" },
         { text: "Status", value: "status" },
         { text: "Time", value: "time" },
+        { text: "Admin Selection", value: "false" },
       ],
       requests: [],
       loading: true,
+      selected: [],
     };
   },
   methods: {
