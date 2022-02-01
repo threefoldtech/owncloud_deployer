@@ -56,15 +56,14 @@ class TFStatus(Enum):
 class Terraform(Base):
 
     extra_env = fields.Typed(dict, default={})
-    hcl_content = fields.String()
-    
+    _hcl_content = fields.String()
+    status = fields.Enum(TFStatus)
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._check_install(TF_BINARY)
         self._env = None
-        self._hcl_content = None
-        self.extra_env = {}
-        self.status = TFStatus.NEW
+
         self.global_args = {
             "chdir": f"-chdir={self.state_dir}",
             }
@@ -218,6 +217,7 @@ class Terraform(Base):
         self._log_proc_output(proc)
         if proc.returncode == 0:
             self.status = TFStatus.INITIALIZED
+            self.save()
         return proc.returncode
 
     def apply(self, vars=None):
@@ -242,6 +242,7 @@ class Terraform(Base):
             self.status = TFStatus.APPLIED
         else:
             self.status = TFStatus.ERROR
+        self.save()
         return proc.returncode, list(map(json.loads, proc.stdout.decode().splitlines()))
 
     def destroy(self, vars=None):
@@ -266,6 +267,7 @@ class Terraform(Base):
             self.status = TFStatus.DESTROYED
         else:
             self.status = TFStatus.ERROR
+        self.save()
         return proc.returncode, list(map(json.loads, proc.stdout.decode().splitlines()))
 
     def get_state_list(self, filter_by_resource=None, filter_by_id=None):
