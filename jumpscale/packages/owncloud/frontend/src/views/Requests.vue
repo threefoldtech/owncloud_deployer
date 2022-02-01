@@ -79,12 +79,13 @@ export default {
           console.log("Error! Could not reach the API. " + error);
         });
     },
-    deploy(name) {
+    deploy(list) {
       this.isLoading = true;
-      Service.deploy(name)
+      let selectedNames = list.map((item) => item.tname);
+      Service.deploy(selectedNames)
         .then(() => {
           this.getRequests();
-          this.isLoading = true;
+          this.isLoading = false;
         })
         .catch((error) => {
           console.log("Error! Could not reach the API. " + error);
