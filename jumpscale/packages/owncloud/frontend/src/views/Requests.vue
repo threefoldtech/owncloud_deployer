@@ -6,14 +6,14 @@
     <v-data-table
       class="ma-5 elevation-1"
       :headers="headers"
-      :items="requests"
+      :items="requestsWithIndex"
       item-key="name"
       show-select
       :single-select="singleSelect"
       v-model="selected"
       :items-per-page="5"
     >
-      <template v-slot:item.id="{ item }">{{ item.index }}</template>
+      <template v-slot:item.index="{ item }">{{ item.index }}</template>
       <template v-slot:item.email="{ item }">{{
         item.email == "" ? "-" : item.email
       }}</template>
@@ -51,7 +51,7 @@ export default {
   data() {
     return {
       headers: [
-        { text: "#", value: "id" },
+        { text: "#", value: "index" },
         { text: "Name", value: "tname" },
         { text: "Email", value: "email" },
         { text: "Status", value: "status" },
@@ -138,6 +138,14 @@ export default {
       var timestamp = moment.unix(ts);
       var now = new Date();
       return timestamp.to(now);
+    },
+  },
+  computed: {
+    requestsWithIndex() {
+      return this.requests.map((requests, index) => ({
+        ...requests,
+        index: index + 1,
+      }));
     },
   },
   mounted() {
