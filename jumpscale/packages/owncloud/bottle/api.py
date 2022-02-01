@@ -1,19 +1,19 @@
 import csv
 
-from jumpscale.core.base import StoredFactory
 from jumpscale.loader import j
 from jumpscale.packages.auth.bottle.auth import admin_only, get_user_info, login_required
-from owncloud.models.users import UserModel, UserStatus
+from owncloud.models.users import UserStatus
+from owncloud.models import user_model
 
 from bottle import Bottle, request, HTTPResponse, static_file
 
 app = Bottle()
-user_model = StoredFactory(UserModel)
-user_model.always_reload = True
+
 
 templates_path = j.sals.fs.join_paths(j.sals.fs.dirname(__file__), "templates")
 env = j.tools.jinja2.get_env(templates_path)
 
+DEPLOYMENT_QUEUE = "DEPLOYMENT_QUEUE"
 
 @app.route("/api/requests", method=["GET"])
 @login_required
@@ -80,10 +80,11 @@ def deploy_instances():
         headers={"Content-Type": "application/json"},
     )
     users = j.data.serializers.json.loads(request.body.read())
+    
     for username in users:
         user = user_model.get(username)
-        user.status = UserStatus.DONE
-        user.save()
+        if user.status != UserStatus.DONE:
+            j.core.db.rpush(DEPLOYMENT_QUEUE, j.data.serializers.json.dumps(username))
 
     return HTTPResponse(
         {"success": True},

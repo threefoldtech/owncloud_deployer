@@ -17,9 +17,9 @@
       >
         <v-card class="pa-md-13 mx-lg-auto bg-blue flex-grow-1">
           <v-img
-            :src="require('../assets/logo.svg')"
-            max-height="120"
-            max-width="120"
+            :src="require('../assets/tft_and_owncloud.png')"
+            height="auto"
+            max-width="300"
           ></v-img>
 
           <v-card-title>
@@ -40,7 +40,6 @@
               v-model="email"
               :rules="emailRules"
               label="E-mail"
-              required
             ></v-text-field>
 
             <v-checkbox
