@@ -11,26 +11,26 @@
       <template v-slot:item.email="{ item }">{{
         item.email == "" ? "-" : item.email
       }}</template>
-      <template
-        v-slot:item.status="{ item }"
-        class="status"
-        :class="{
-          available: item.status == 'new',
-          disabled: item.status == 'pending',
-          normal: item.status == 'done',
-          failure: item.status == 'failure',
-        }"
-        >{{ status }}></template
-      >
+      <template v-slot:item.status="{ item }">
+        <td>
+          <v-chip class="status" :class="item.status">{{ item.status }}</v-chip>
+        </td>
+      </template>
       <template v-slot:item.time="{ item }">{{ time(item.time) }}</template>
       <template v-slot:item.selected="{ item }">
-        <v-checkbox v-model="selected" :value="item.selected"></v-checkbox>
+        <v-checkbox v-model="item.selected"></v-checkbox>
       </template>
     </v-data-table>
     <div class="text-right pt-2 mt-10">
-      <v-btn color="primary" class="mr-2">Deploy</v-btn>
-      <v-btn color="primary" class="mr-2">Redeploy</v-btn>
-      <v-btn color="primary">Export</v-btn>
+      <v-btn color="primary" class="mr-2"
+        ><v-icon dark left> mdi-cloud-upload</v-icon> Deploy</v-btn
+      >
+      <v-btn color="primary" class="mr-2"
+        ><v-icon dark left> mdi-reload</v-icon>Redeploy</v-btn
+      >
+      <v-btn color="primary"
+        ><v-icon dark left> mdi-export-variant</v-icon>Export</v-btn
+      >
     </div>
   </div>
 </template>
@@ -81,16 +81,16 @@ export default {
 .status {
   color: #fff;
 }
-.available {
+.v-chip.NEW {
   background-color: #2dccff;
 }
-.disabled {
+.v-chip.PENDING {
   background-color: #9ea7ad;
 }
-.normal {
+.v-chip.DONE {
   background-color: #56f000;
 }
-.failure {
+.v-chip.FAILURE {
   background-color: #ff3838;
 }
 </style>
