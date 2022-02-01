@@ -14,3 +14,4 @@ class UserModel(Base):
     email = fields.Email()
     status = fields.Enum(UserStatus)
     time = fields.DateTime()
+    deployment_timestamp = fields.DateTime()
