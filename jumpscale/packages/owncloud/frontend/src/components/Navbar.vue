@@ -1,9 +1,9 @@
 <template>
   <v-app-bar color="blue" dense elevation="4" flat outlined rounded shaped>
     <v-img
-      :src="require('../assets/logo.svg')"
-      max-height="60"
-      max-width="75"
+      :src="require('../assets/tft_and_owncloud.png')"
+      height="auto"
+      max-width="300"
     ></v-img
   ></v-app-bar>
 </template>
@@ -14,6 +14,6 @@
 }
 
 .v-image {
-    margin: auto;
+  margin: auto;
 }
 </style>
