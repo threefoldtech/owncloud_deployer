@@ -7,9 +7,10 @@
       class="ma-5 elevation-1"
       :headers="headers"
       :items="requestsWithIndex"
-      item-key="name"
+      item-key="tname"
       show-select
-      :single-select="singleSelect"
+      :loading="isLoading"
+      loading-text="Loading... Please wait"
       v-model="selected"
       :items-per-page="5"
     >
@@ -25,10 +26,10 @@
       <template v-slot:item.time="{ item }">{{ time(item.time) }}</template>
     </v-data-table>
     <div class="text-center pt-2 mt-10">
-      <v-btn class="mr-2 bg-blue white--text"
+      <v-btn class="mr-2 bg-blue white--text" @click="deploy(selected)"
         ><v-icon left> mdi-cloud-upload</v-icon> Deploy</v-btn
       >
-      <v-btn class="mr-2 bg-blue white--text"
+      <v-btn class="mr-2 bg-blue white--text" @click="deploy(selected)"
         ><v-icon left> mdi-reload</v-icon>Redeploy</v-btn
       >
       <v-btn class="bg-blue white--text" @click="exportData()"
@@ -62,9 +63,8 @@ export default {
           sortable: false,
         },
       ],
-      singleSelect: false,
+      isLoading: true,
       requests: [],
-      loading: true,
       selected: [],
     };
   },
@@ -73,7 +73,18 @@ export default {
       Service.getRequests()
         .then((response) => {
           this.requests = response.data;
-          this.loading = false;
+          this.isLoading = false;
+        })
+        .catch((error) => {
+          console.log("Error! Could not reach the API. " + error);
+        });
+    },
+    deploy(name) {
+      this.isLoading = true;
+      Service.deploy(name)
+        .then(() => {
+          this.getRequests();
+          this.isLoading = true;
         })
         .catch((error) => {
           console.log("Error! Could not reach the API. " + error);

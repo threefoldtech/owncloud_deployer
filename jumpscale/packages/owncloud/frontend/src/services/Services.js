@@ -22,5 +22,8 @@ export default {
     },
     exportData() {
         return ownCloudClient.get('/requests/export')
+    },
+    deploy(name) {
+        return ownCloudClient.post('/deployment', [name])
     }
 }
