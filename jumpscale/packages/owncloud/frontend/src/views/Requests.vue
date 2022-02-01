@@ -5,7 +5,7 @@
       :headers="headers"
       :items="requests"
       :items-per-page="5"
-      v-if="loading"
+      :loading="loading"
       loading-text="Loading... Please wait"
     >
       <template v-slot:item.email="{ item }">{{
