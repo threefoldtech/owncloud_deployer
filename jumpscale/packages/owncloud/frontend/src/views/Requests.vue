@@ -30,7 +30,7 @@
       <v-btn color="primary" class="mr-2"
         ><v-icon dark left> mdi-reload</v-icon>Redeploy</v-btn
       >
-      <v-btn color="primary"
+      <v-btn color="primary" @click="exportData()"
         ><v-icon dark left> mdi-export-variant</v-icon>Export</v-btn
       >
     </div>
@@ -66,6 +66,15 @@ export default {
         .then((response) => {
           this.requests = response.data;
           this.loading = false;
+        })
+        .catch((error) => {
+          console.log("Error! Could not reach the API. " + error);
+        });
+    },
+    exportData() {
+      Service.exportData()
+        .then(() => {
+          console.log("Data exported!");
         })
         .catch((error) => {
           console.log("Error! Could not reach the API. " + error);

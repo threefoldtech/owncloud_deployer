@@ -4,7 +4,7 @@
       <v-list-item-content>
         <div class="text-overline mb-4">Current balance</div>
         <v-list-item-title v-if="balance" class="text-h5 mb-1">
-          {{ balance }}TFT
+          {{ balance }} <span class="price">TFT</span>
         </v-list-item-title>
       </v-list-item-content>
     </v-list-item>
@@ -36,3 +36,9 @@ export default {
   },
 };
 </script>
+
+<style >
+.price {
+  font-size: 1rem;
+}
+</style>
