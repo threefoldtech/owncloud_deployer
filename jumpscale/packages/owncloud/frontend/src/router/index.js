@@ -25,3 +25,13 @@ const router = new VueRouter({
 });
 
 export default router;
+
+router.beforeEach((to, from, next) => {
+  // Redirect if fullPath begins with a hash (ignore hashes later in path)
+  if (to.fullPath.substring(0, 2) === "/#") {
+    const path = to.fullPath.substring(2);
+    next(path);
+    return;
+  }
+  next();
+});
