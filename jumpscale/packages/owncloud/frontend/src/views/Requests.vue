@@ -84,8 +84,12 @@ export default {
 </script>
 
 <style >
-.status {
-  color: #fff;
+.v-chip {
+  color: #fff !important;
+}
+.v-chip.v-size--default {
+  border-radius: 2px;
+  height: 25px;
 }
 .v-chip.NEW {
   background-color: #2dccff !important;

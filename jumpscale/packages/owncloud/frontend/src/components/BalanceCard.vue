@@ -3,8 +3,8 @@
     <v-list-item>
       <v-list-item-content>
         <div class="text-overline mb-4">Current balance</div>
-        <v-list-item-title class="text-h5 mb-1">
-          {{ balance }}
+        <v-list-item-title v-if="balance" class="text-h5 mb-1">
+          {{ balance }}TFT
         </v-list-item-title>
       </v-list-item-content>
     </v-list-item>
@@ -17,14 +17,14 @@ import Service from "../services/Services";
 export default {
   data() {
     return {
-      balance: 0,
+      balance: null,
     };
   },
   methods: {
     getBalance() {
       Service.getBalance()
         .then((response) => {
-          this.balance = response.data;
+          this.balance = response.data.balance;
         })
         .catch((error) => {
           console.log("Error! Could not reach the API. " + error);
