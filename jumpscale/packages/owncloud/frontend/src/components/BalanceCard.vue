@@ -1,5 +1,5 @@
 <template>
-  <v-card class="ml-auto" max-width="344" outlined>
+  <v-card class="my-16 mx-auto" max-width="344" outlined>
     <v-list-item>
       <v-list-item-content>
         <div class="text-overline mb-4">Current balance</div>
