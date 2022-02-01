@@ -1,7 +1,8 @@
 <template>
   <div>
-    <h1 class="pa-5">Requests</h1>
+    <Navbar />
     <BalanceCard />
+    <h4 class="h4 pa-5">Requests:</h4>
     <v-data-table
       class="ma-5"
       :headers="headers"
@@ -23,27 +24,29 @@
         <v-checkbox v-model="item.admin_selection" />
       </template>
     </v-data-table>
-    <div class="text-right pt-2 mt-10">
-      <v-btn color="primary" class="mr-2"
-        ><v-icon dark left> mdi-cloud-upload</v-icon> Deploy</v-btn
+    <div class="text-center pt-2 mt-10">
+      <v-btn class="mr-2 bg-blue white--text"
+        ><v-icon left> mdi-cloud-upload</v-icon> Deploy</v-btn
       >
-      <v-btn color="primary" class="mr-2"
-        ><v-icon dark left> mdi-reload</v-icon>Redeploy</v-btn
+      <v-btn class="mr-2 bg-blue white--text"
+        ><v-icon left> mdi-reload</v-icon>Redeploy</v-btn
       >
-      <v-btn color="primary" @click="exportData()"
-        ><v-icon dark left> mdi-export-variant</v-icon>Export</v-btn
+      <v-btn class="bg-blue white--text" @click="exportData()"
+        ><v-icon left> mdi-export-variant</v-icon>Export</v-btn
       >
     </div>
   </div>
 </template>
 
 <script>
+import Navbar from "@/components/Navbar.vue";
 import BalanceCard from "@/components/BalanceCard.vue";
 import Service from "../services/Services";
 import moment from "moment";
 export default {
   components: {
     BalanceCard,
+    Navbar,
   },
   data() {
     return {
@@ -74,60 +77,56 @@ export default {
     exportData() {
       Service.exportData()
         .then((response) => {
-          var json = $.parseJSON(response.data);
-          var csv = this.JSON2CSV(json);
-          var downloadLink = document.createElement("a");
-          var blob = new Blob(["\ufeff", csv]);
-          var url = URL.createObjectURL(blob);
-          downloadLink.href = url;
-          downloadLink.download = "data.csv";
-          document.body.appendChild(downloadLink);
-          downloadLink.click();
-          document.body.removeChild(downloadLink);
+          this.exportCSVFile(response.data);
         })
         .catch((error) => {
           console.log("Error! Could not reach the API. " + error);
         });
     },
-    JSON2CSV(objArray) {
+
+    exportCSVFile(items) {
+      // Convert Object to JSON
+      var jsonObject = JSON.stringify(items);
+
+      var csv = this.convertToCSV(jsonObject);
+
+      var exportedFilenmae = "data.csv";
+
+      var blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      if (navigator.msSaveBlob) {
+        // IE 10+
+        navigator.msSaveBlob(blob, exportedFilenmae);
+      } else {
+        var link = document.createElement("a");
+        if (link.download !== undefined) {
+          // feature detection
+          // Browsers that support HTML5 download attribute
+          var url = URL.createObjectURL(blob);
+          link.setAttribute("href", url);
+          link.setAttribute("download", exportedFilenmae);
+          link.style.visibility = "hidden";
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+      }
+    },
+
+    convertToCSV(objArray) {
       var array = typeof objArray != "object" ? JSON.parse(objArray) : objArray;
       var str = "";
-      var line = "";
-
-      if ($("#labels").is(":checked")) {
-        var head = array[0];
-        if ($("#quote").is(":checked")) {
-          for (var index in array[0]) {
-            var value = index + "";
-            line += '"' + value.replace(/"/g, '""') + '",';
-          }
-        } else {
-          for (var index in array[0]) {
-            line += index + ",";
-          }
-        }
-
-        line = line.slice(0, -1);
-        str += line + "\r\n";
-      }
 
       for (var i = 0; i < array.length; i++) {
         var line = "";
+        for (var index in array[i]) {
+          if (line != "") line += ",";
 
-        if ($("#quote").is(":checked")) {
-          for (var index in array[i]) {
-            var value = array[i][index] + "";
-            line += '"' + value.replace(/"/g, '""') + '",';
-          }
-        } else {
-          for (var index in array[i]) {
-            line += array[i][index] + ",";
-          }
+          line += array[i][index];
         }
 
-        line = line.slice(0, -1);
         str += line + "\r\n";
       }
+
       return str;
     },
     time(ts) {
@@ -161,5 +160,8 @@ export default {
 }
 .v-chip.FAILURE {
   background-color: #ff3838 !important;
+}
+.bg-blue {
+  background-color: #041e42 !important;
 }
 </style>
