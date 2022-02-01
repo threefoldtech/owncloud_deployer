@@ -5,15 +5,13 @@
       :headers="headers"
       :items="requests"
       :items-per-page="5"
-      loading
+      v-if="loading"
       loading-text="Loading... Please wait"
     >
       <template v-slot:item.email="{ item }">{{
         item.email == "" ? "-" : item.email
       }}</template>
-      <template v-slot:item.time="{ item }">{{
-        timeSince(item.time)
-      }}</template>
+      <template v-slot:item.time="{ item }">{{ time(item.time) }}</template>
     </v-data-table>
     <div class="text-center pt-2 mt-10">
       <v-btn color="primary" class="mr-2"> btn 1 </v-btn>
