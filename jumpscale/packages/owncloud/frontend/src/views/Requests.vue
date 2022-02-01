@@ -11,7 +11,9 @@
       <template v-slot:item.email="{ item }">{{
         item.email == "" ? "-" : item.email
       }}</template>
-      <template v-slot:item.time="{ item }">{{ timeSince(item) }}</template>
+      <template v-slot:item.time="{ item }">{{
+        timeSince(item.time)
+      }}</template>
     </v-data-table>
     <div class="text-center pt-2 mt-10">
       <v-btn color="primary" class="mr-2"> btn 1 </v-btn>
@@ -22,7 +24,7 @@
 
 <script>
 import Service from "../services/Services";
-
+import moment from "moment";
 export default {
   data() {
     return {
@@ -33,6 +35,7 @@ export default {
         { text: "Time", value: "time" },
       ],
       requests: [],
+      loading: true,
     };
   },
   methods: {
@@ -40,36 +43,16 @@ export default {
       Service.getRequests()
         .then((response) => {
           this.requests = response.data;
+          this.loading = false;
         })
         .catch((error) => {
           console.log("Error! Could not reach the API. " + error);
         });
     },
-    timeSince(date) {
-      var seconds = Math.floor((new Date() - date) / 1000);
-
-      var interval = seconds / 31536000;
-
-      if (interval > 1) {
-        return Math.floor(interval) + " years";
-      }
-      interval = seconds / 2592000;
-      if (interval > 1) {
-        return Math.floor(interval) + " months";
-      }
-      interval = seconds / 86400;
-      if (interval > 1) {
-        return Math.floor(interval) + " days";
-      }
-      interval = seconds / 3600;
-      if (interval > 1) {
-        return Math.floor(interval) + " hours";
-      }
-      interval = seconds / 60;
-      if (interval > 1) {
-        return Math.floor(interval) + " minutes";
-      }
-      return Math.floor(seconds) + " seconds";
+    time(ts) {
+      var timestamp = moment.unix(ts);
+      var now = new Date();
+      return timestamp.to(now);
     },
   },
   mounted() {
