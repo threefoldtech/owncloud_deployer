@@ -35,7 +35,6 @@ class Deployment(BackgroundService):
             try:
                 j.logger.info(f"Deploying for user {username}")
                 client = j.tools.terraform.get(username)
-                client = client.get(username)
                 client.hcl_content = j.sals.fs.read_file(TF_HCL_CONTENT_PATH)
                 client.providers_mirror()
                 client.init(use_plugin_dir=True)
@@ -78,7 +77,8 @@ class Deployment(BackgroundService):
                 j.core.db.rpush(MAIL_QUEUE, j.data.serializers.json.dumps(mail_info))
                 j.logger.info(f"Mail sent successfully {message}")
             except Exception as e:
-                j.logger.exception("failed to deploy for user", e)
+                j.logger.error(f"failed to deploy for user {username}, error message:\n{e.args}")
+                j.logger.exception(f"failed to deploy for user {username}", e)
                 user.status = UserStatus.FAILURE
                 user.save()
                 
