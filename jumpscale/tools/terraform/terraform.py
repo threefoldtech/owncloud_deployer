@@ -101,9 +101,6 @@ True
 True
 ```
 
-
-### Listing infrastructures
-
 """
 from jumpscale.core.base import Base, fields
 from jumpscale.core.exceptions import NotFound, Runtime

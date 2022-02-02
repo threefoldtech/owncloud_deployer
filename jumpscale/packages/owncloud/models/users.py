@@ -5,7 +5,7 @@ from jumpscale.core.base import Base, fields
 class UserStatus(Enum):
     NEW = "NEW"
     PENDING = "PENDING"
-    IN_PROGRESS = "IN_PROGRESS"
+    PROGRESSING = "PROGRESSING"
     DONE = "DONE"
     FAILURE = "FAILURE"
 

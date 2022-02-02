@@ -32,7 +32,7 @@ class Deployment(BackgroundService):
                 break
             username = j.data.serializers.json.loads(user_info_json)
             user = user_model.get(username)
-            user.status = UserStatus.IN_PROGRESS
+            user.status = UserStatus.PROGRESSING
             user.save()
             try:
                 j.logger.info(f"Deploying for user {username}")
