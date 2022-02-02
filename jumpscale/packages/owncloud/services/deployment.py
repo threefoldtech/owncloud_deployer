@@ -1,5 +1,5 @@
 from jumpscale.loader import j
-
+from textwrap import dedent
 from jumpscale.tools.servicemanager.servicemanager import BackgroundService
 from owncloud.models import user_model
 from owncloud.models.users import UserStatus
@@ -56,26 +56,28 @@ class Deployment(BackgroundService):
                     continue
                 admin_username = "admin"
                 
-                return_code, admin_password = client.get_terraform_output(output_name="admin_passwords")
+                return_code, admin_password = client.get_output(output_name="admin_passwords")
                 
                 if return_code != 0:
                     j.logger.critical(f"failed to deploy for user {username}, {admin_password}")
                     continue
 
                 # send email
-                message = f"Owncloud instance will be ready ready in few minutes, please use these credentials to access your instance \n\
-                Domain: {domain} \n\
-                Admin username: {admin_username} \n\
-                Admin password: {admin_password} \n"
+                message = f"""\
+                Owncloud instance will be ready ready in few minutes, please use these credentials to access your instance \n
+                Domain: {domain} \n
+                Admin username: {admin_username} \n
+                Admin password: {admin_password} \n
+                """
                 mail_info = {
                     "recipients_emails": user.email,
                     "sender": "no-reply@threefold.io",
                     "subject": "Owncloud deployment",
-                    "message": message,
+                    "message": dedent(message),
                 }
                 j.logger.info(f"Sending mail for user {username}")
                 j.core.db.rpush(MAIL_QUEUE, j.data.serializers.json.dumps(mail_info))
-                j.logger.info(f"Mail sent successfully {message}")
+                j.logger.info(f"Mail sent successfully {dedent(message)}")
             except Exception as e:
                 j.logger.error(f"failed to deploy for user {username}, error message:\n{e.args}")
                 j.logger.exception(f"failed to deploy for user {username}", e)
