@@ -80,16 +80,20 @@ export default {
         });
     },
     deploy(list) {
-      this.isLoading = true;
-      let selectedNames = list.map((item) => item.tname);
-      Service.deploy(selectedNames)
-        .then(() => {
-          this.getRequests();
-          this.isLoading = false;
-        })
-        .catch((error) => {
-          console.log("Error! Could not reach the API. " + error);
-        });
+      if (list.length == 0) {
+        alert("No items selected");
+      } else {
+        this.isLoading = true;
+        let selectedNames = list.map((item) => item.tname);
+        Service.deploy(selectedNames)
+          .then(() => {
+            this.getRequests();
+            this.isLoading = false;
+          })
+          .catch((error) => {
+            console.log("Error! Could not reach the API. " + error);
+          });
+      }
     },
     exportData() {
       Service.exportData()
