@@ -49,7 +49,7 @@ class Deployment(BackgroundService):
                 user.save()
                 j.logger.info(f"Deployment success for user {username}")
                 
-                return_code, domain = client.get_terraform_output(output_name="fqdn")
+                return_code, domain = client.get_output(output_name="fqdn")
 
                 if return_code != 0:
                     j.logger.critical(f"failed to deploy for user {username}, {domain}")
