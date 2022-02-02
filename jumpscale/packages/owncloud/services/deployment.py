@@ -32,6 +32,8 @@ class Deployment(BackgroundService):
                 break
             username = j.data.serializers.json.loads(user_info_json)
             user = user_model.get(username)
+            user.status = UserStatus.IN_PROGRESS
+            user.save()
             try:
                 j.logger.info(f"Deploying for user {username}")
                 client = j.tools.terraform.get(username)
@@ -64,7 +66,7 @@ class Deployment(BackgroundService):
 
                 # send email
                 message = f"""\
-                Owncloud instance will be ready ready in few minutes, please use these credentials to access your instance \n
+                Owncloud instance will be ready in few minutes, please use these credentials to access your instance \n
                 Domain: {domain} \n
                 Admin username: {admin_username} \n
                 Admin password: {admin_password} \n
@@ -83,14 +85,15 @@ class Deployment(BackgroundService):
                 j.logger.exception(f"failed to deploy for user {username}", e)
                 user.status = UserStatus.FAILURE
                 user.save()
+                continue
                 
 
     def _destroy_terraform(self, client, name):
         for i in range(3):
-            j.logger.debug(f"try {i} to destroy the instance for user {name}")
+            j.logger.debug(f"try {i} to clean up the failed deployment for user {name}")
             return_code, res = client.destroy({"user":name})
             if return_code != 0:
-                j.logger.error(f"failed to deploy for user {name}, error message:\n{res[-1]}")
+                j.logger.error(f"failed to clean up the the failed deployment for user {name}, error message:\n{res[-1]}")
                 continue
             break
 
@@ -98,16 +101,16 @@ class Deployment(BackgroundService):
     def _apply_terraform(self, client, name):
         for i in range(3):
             j.logger.debug(f"try {i} to deploy the instance for user {name}")
-            user = user_model.get(name)
-            user.status = UserStatus.PENDING
             if client.status == TFStatus.APPLIED:
                 return True
             return_code, res = client.apply({"user":name})
             if return_code != 0:
                 j.logger.error(f"failed to deploy for user {name}, error message:\n{res[-1]}")
-                self._destroy_terraform(client, name)
                 continue
             return True
+        rc, resources = client.get_state_list()
+        if rc == 0 and resources:
+            self._destroy_terraform(client, name)
         return False
 
 service = Deployment()
