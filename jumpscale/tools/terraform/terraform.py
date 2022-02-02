@@ -15,6 +15,8 @@ sudo apt-get update && sudo apt-get install terraform
 
 its recommended to set environment variable TF_IN_AUTOMATION to any non-empty value.
 
+also you could set any provider specific input variables in environment variables.
+
 ## Usage
 
 ### Basic usage
@@ -32,18 +34,22 @@ its recommended to set environment variable TF_IN_AUTOMATION to any non-empty va
 >>> tf.status
 <TFStatus.CREATED: 1>
 
+# terraform providers mirror, populate the PLUGIN_DIR with the required terraform plugins
 >>> tf.providers_mirror()
 (0, '- Mirroring threefoldtech/grid...\n  - Selected v0.1.23 with no constraints\n  - Downloading package for linux_amd64...\n  - Package authenticated: self-signed\n- Mirroring hashicorp/random...\n  - Selected v3.1.0 with no constraints\n  - Downloading package for linux_amd64...\n  - Package authenticated: signed by HashiCorp\n')
 
+# terraform init 
 >>> tf.init(use_plugin_dir=True)
 0
 
 >>> tf.is_initialized
 True
 
+# terrafrom validate, check if the .tf file is valid
 >>> tf.validate_hcl()
 (0, {'format_version': '1.0', 'valid': True, 'error_count': 0, 'warning_count': 0, 'diagnostics': []})
 
+# terrafrom apply
 >>> tf.apply(vars={'user': 'samehabouelsaad'})
 (0, [
     {'@level': 'info', '@message': 'Terraform 1.1.4', '@module': 'terraform.ui', '@timestamp': '2022-02-02T00:55:18.948737+02:00', 'terraform': '1.1.4', 'type': 'version', 'ui': '1.0'},
@@ -65,15 +71,18 @@ True
 >>> tf.state_dir                                                                                                                                                                                        
 '/home/sameh/tf_owncloud/tf_states/samehabouelsaad'
 
+# terraform state list
 >>> tf.get_state_list() 
 (0, ['data.grid_gateway_domain.domain', 'grid_deployment.nodes', 'grid_name_proxy.p1', 'grid_network.ownnet', 'grid_scheduler.sched', 'random_password.password', 'random_string.random'])
 
+# terrafomt output 
 >>> tf.get_output("fqdn") 
 (0, 'owncloudsamehabouelsaad.gent01.dev.grid.tf')
 
->>> tf.plan_summary(vars={"user": tf.instance_name})
+>>> tf.get_plan_summary(vars={"user": tf.instance_name})
 (0, {'add': 0, 'change': 0, 'remove': 0, 'operation': 'plan'})
 
+# terrafomr show
 >>> tf.show()
 (0, {'format_version': '1.0', 'terraform_version': '1.1.4', 'values': {'outputs': {'admin_passwords': {'sensitive': True, 'value': 'Par12}V3'}, 'fqdn': {'sensitive': False, 'value': 'owncloudsamehabouelsaad.gent01.dev.grid.tf'}, 'nodes_ip': {'sensitive': False, 'value': '10.1.3.2'}, 'nodes_ygg_ip': {'sensitive': False, 'value': '301:a9bd:9b77:ce71:399e:1bab:7483:12c3'}}, 'root_module': {'resources': [{'address': 'data.grid_gateway_domain.domain', 'mode': 'data', 'type': 'grid_gateway_domain', 'name': 'domain', 'provider_name': 'registry.terraform.io/threefoldtech/grid', 'schema_version': 0, 'values': {'fqdn': 'owncloudsamehabouelsaad.gent01.dev.grid.tf', 'id': '1643756147', 'name': 'owncloudsamehabouelsaad', 'node': 7}, 'sensitive_values': {}}, {'address': 'grid_deployment.nodes', 'mode': 'managed', 'type': 'grid_deployment', 'name': 'nodes', 'provider_name': 'registry.terraform.io/threefoldtech/grid', 'schema_version': 0, 'values': {'disks': [{'description': 'volume holding docker data', 'name': 'data_samehabouelsaad', 'size': 70}], 'id': '6799', 'ip_range': '10.1.3.0/24', 'network_name': 'network_samehabouelsaad', 'node': 17, 'qsfs': [], 'vms': [{'computedip': '', 'computedip6': '', 'cpu': 4, 'description': '', 'entrypoint': '/sbin/zinit init', 'env_vars': {'OWNCLOUD_ADMIN_PASSWORD': 'Par12}V3', 'OWNCLOUD_ADMIN_USERNAME': 'admin', 'OWNCLOUD_DOMAIN': 'owncloudsamehabouelsaad.gent01.dev.grid.tf', 'OWNCLOUD_MAIL_DOMAIN': 'owncloudsamehabouelsaad.gent01.dev.grid.tf', 'OWNCLOUD_MAIL_FROM_ADDRESS': 'owncloud', 'OWNCLOUD_MAIL_SMTP_HOST': '', 'OWNCLOUD_MAIL_SMTP_NAME': '', 'OWNCLOUD_MAIL_SMTP_PASSWORD': '', 'OWNCLOUD_MAIL_SMTP_PORT': '', 'OWNCLOUD_MAIL_SMTP_SECURE': 'none', 'SSH_KEY': 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC9MI7fh4xEOOEKL7PvLvXmSeRWesToj6E26bbDASvlZnyzlSKFLuYRpnVjkr8JcuWKZP6RQn8+2aRs6Owyx7Tx+9kmEh7WI5fol0JNDn1D0gjp4XtGnqnON7d0d5oFI+EjQQwgCZwvg0PnV/2DYoH4GJ6KPCclPz4a6eXrblCLA2CHTzghDgyj2x5B4vB3rtoI/GAYYNqxB7REngOG6hct8vdtSndeY1sxuRoBnophf7MPHklRQ6EG2GxQVzAOsBgGHWSJPsXQkxbs8am0C9uEDL+BJuSyFbc/fSRKptU1UmS18kdEjRgGNoQD7D+Maxh1EbmudYqKW92TVgdxXWTQv1b1+3dG5+9g+hIWkbKZCBcfMe4nA5H7qerLvoFWLl6dKhayt1xx5mv8XhXCpEC22/XHxhRBHBaWwSSI+QPOCvs4cdrn4sQU+EXsy7+T7FIXPeWiC2jhFd6j8WIHAv6/rRPsiwV1dobzZOrCxTOnrqPB+756t7ANxuktsVlAZaM= sameh@sameh-inspiron-3576'}, 'flist': 'https://hub.grid.tf/samehabouelsaad.3bot/abouelsaad-owncloud-10.9.1.flist', 'flist_checksum': '', 'ip': '10.1.3.2', 'memory': 4096, 'mounts': [{'disk_name': 'data_samehabouelsaad', 'mount_point': '/var/lib/docker'}], 'name': 'owncloud_samehabouelsaad', 'planetary': True, 'publicip': False, 'publicip6': False, 'rootfs_size': 0, 'ygg_ip': '301:a9bd:9b77:ce71:399e:1bab:7483:12c3'}], 'zdbs': []}, 'sensitive_values': {'disks': [{}], 'qsfs': [], 'vms': [{'env_vars': {'OWNCLOUD_ADMIN_PASSWORD': True}, 'mounts': [{}]}], 'zdbs': []}, 'depends_on': ['data.grid_gateway_domain.domain', 'grid_network.ownnet', 'grid_scheduler.sched', 'random_password.password']}, {'address': 'grid_name_proxy.p1', 'mode': 'managed', 'type': 'grid_name_proxy', 'name': 'p1', 'provider_name': 'registry.terraform.io/threefoldtech/grid', 'schema_version': 0, 'values': {'backends': ['http://301:a9bd:9b77:ce71:399e:1bab:7483:12c3:80'], 'description': None, 'fqdn': 'owncloudsamehabouelsaad.gent01.dev.grid.tf', 'id': '7aaebb59-1710-419c-b166-88c8e1820815', 'name': 'owncloudsamehabouelsaad', 'name_contract_id': 6800, 'node': 7, 'node_deployment_id': {'7': 6801}, 'tls_passthrough': False}, 'sensitive_values': {'backends': [False], 'node_deployment_id': {}}, 'depends_on': ['data.grid_gateway_domain.domain', 'grid_deployment.nodes', 'grid_network.ownnet', 'grid_scheduler.sched', 'random_password.password']}, {'address': 'grid_network.ownnet', 'mode': 'managed', 'type': 'grid_network', 'name': 'ownnet', 'provider_name': 'registry.terraform.io/threefoldtech/grid', 'schema_version': 0, 'values': {'access_wg_config': '\n[Interface]\nAddress = 100.64.1.2\nPrivateKey = 6PaE0fIZEtiFbTOVpYp4aJ4EoUciPOTs7fjronC82HM=\n[Peer]\nPublicKey = uRyYR2PID/Qtdg8rQYBWanUQofiZISI19buSyP9PfHY=\nAllowedIPs = 10.1.0.0/16, 100.64.0.0/16\nPersistentKeepalive = 25\nEndpoint = 185.206.122.32:4746\n\t', 'add_wg_access': True, 'description': 'server network', 'external_ip': '10.1.2.0/24', 'external_sk': '6PaE0fIZEtiFbTOVpYp4aJ4EoUciPOTs7fjronC82HM=', 'id': 'e76eb098-7de7-4dab-958e-1fd55ee74d25', 'ip_range': '10.1.0.0/16', 'name': 'network_samehabouelsaad', 'node_deployment_id': {'17': 6797, '8': 6798}, 'nodes': [17], 'nodes_ip_range': {'17': '10.1.3.0/24', '8': '10.1.4.0/24'}, 'public_node_id': 8}, 'sensitive_values': {'node_deployment_id': {}, 'nodes': [False], 'nodes_ip_range': {}}, 'depends_on': ['grid_scheduler.sched']}, {'address': 'grid_scheduler.sched', 'mode': 'managed', 'type': 'grid_scheduler', 'name': 'sched', 'provider_name': 'registry.terraform.io/threefoldtech/grid', 'schema_version': 0, 'values': {'id': '1643755862', 'nodes': {'name_samehabouelsaad': 7, 'server_samehabouelsaad': 17}, 'requests': [{'certified': False, 'cru': 2, 'domain': False, 'farm': '', 'hru': 0, 'ipv4': False, 'mru': 8096, 'name': 'server_samehabouelsaad', 'sru': 151200}, {'certified': False, 'cru': 0, 'domain': True, 'farm': '', 'hru': 0, 'ipv4': False, 'mru': 0, 'name': 'name_samehabouelsaad', 'sru': 0}]}, 'sensitive_values': {'nodes': {}, 'requests': [{}, {}]}}, {'address': 'random_password.password', 'mode': 'managed', 'type': 'random_password', 'name': 'password', 'provider_name': 'registry.terraform.io/hashicorp/random', 'schema_version': 0, 'values': {'id': 'none', 'keepers': None, 'length': 8, 'lower': True, 'min_lower': 0, 'min_numeric': 0, 'min_special': 0, 'min_upper': 0, 'number': True, 'override_special': None, 'result': 'Par12}V3', 'special': True, 'upper': True}, 'sensitive_values': {}}, {'address': 'random_string.random', 'mode': 'managed', 'type': 'random_string', 'name': 'random', 'provider_name': 'registry.terraform.io/hashicorp/random', 'schema_version': 1, 'values': {'id': '1f902u', 'keepers': None, 'length': 6, 'lower': True, 'min_lower': 0, 'min_numeric': 0, 'min_special': 0, 'min_upper': 0, 'number': True, 'override_special': None, 'result': '1f902u', 'special': False, 'upper': False}, 'sensitive_values': {}}]}}})
 
@@ -87,6 +96,7 @@ True
 >>> tf.status
 <TFStatus.DESTROYED: 3>
 
+# terraform destroy
 >>> tf.is_destroyed
 True
 ```
@@ -95,7 +105,6 @@ True
 ### Listing infrastructures
 
 """
-from email.policy import default
 from jumpscale.core.base import Base, fields
 from jumpscale.core.exceptions import NotFound, Runtime
 
@@ -319,7 +328,7 @@ class Terraform(Base):
             j.logger.debug(f"EXIT CODE: {proc.returncode}")
 
     def providers_mirror(self, target_dir=PLUGIN_DIR):
-        """automatically populate a directory that will be used as a local filesystem mirror in the provider installation configuration.
+        """automatically populate a directory that will be used as a local filesystem mirror for the required providers.
 
         Args:
             target_dir (string, optional): the target directory to mirror the providers. Defaults to PLUGIN_DIR.
@@ -541,15 +550,16 @@ class Terraform(Base):
                     see: https://www.terraform.io/internals/machine-readable-ui
         """
         cmd = ["plan"]
-        for key, value in vars.items():
-            cmd.append(f"-var={key}={value}")
+        if vars:
+            for key, value in vars.items():
+                cmd.append(f"-var={key}={value}")
         cmd.extend(_OUTPUT_ARGS.values())
         cmd.append("-detailed-exitcode")
         proc = self._run_cmd(cmd)
         self._log_proc_output(proc)
         return proc.returncode, list(map(json.loads, proc.stdout.decode().splitlines()))
 
-    def plan_summary(self, vars=None):
+    def get_plan_summary(self, vars=None):
         """returns the summary of the plan
 
         Returns:
@@ -558,7 +568,7 @@ class Terraform(Base):
                 dict represents the summary of the plan.
 
         Example:
-            >>> tf.plan_summary(vars={"user": "test"})
+            >>> tf.get_plan_summary(vars={"user": "test"})
             (0, {'add': 0, 'change': 0, 'remove': 0, 'operation': 'plan'})
         """
         rc, messages = self.plan(vars)
