@@ -88,6 +88,8 @@ export default {
         Service.deploy(selectedNames)
           .then(() => {
             this.getRequests();
+            this.selected = [];
+            list = [];
             this.isLoading = false;
           })
           .catch((error) => {
