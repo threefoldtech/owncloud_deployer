@@ -29,9 +29,6 @@
       <v-btn class="mr-2 bg-blue white--text" @click="deploy(selected)"
         ><v-icon left> mdi-cloud-upload</v-icon> Deploy</v-btn
       >
-      <v-btn class="mr-2 bg-blue white--text" @click="deploy(selected)"
-        ><v-icon left> mdi-reload</v-icon>Redeploy</v-btn
-      >
       <v-btn class="bg-blue white--text" @click="exportData()"
         ><v-icon left> mdi-export-variant</v-icon>Export</v-btn
       >
