@@ -87,10 +87,15 @@ import Service from "../services/Services";
 export default {
   data: () => ({
     title: "Welcome to Owncloud Free Deployment",
-    valid: false,
+    valid: true,
     email: "",
-    emailRules: [(v) => /.+@.+\..+/.test(v) || "E-mail must be valid"],
-    checkbox: false,
+    emailRules: [
+      (v) =>
+        !v ||
+        /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
+        "E-mail must be valid",
+    ],
+    checkbox: null,
     dialog: false,
     message: "",
   }),
@@ -100,16 +105,19 @@ export default {
       this.$refs.form.validate();
     },
     submit() {
-      this.validate();
       Service.sendMails(this.email)
         .then((response) => {
           this.dialog = true;
           this.message = response.data;
+          this.reset();
         })
         .catch((error) => {
           this.dialog = true;
           this.message = error.response.data;
         });
+    },
+    reset() {
+      this.$refs.form.reset();
     },
   },
   computed: {
