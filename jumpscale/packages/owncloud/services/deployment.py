@@ -35,8 +35,10 @@ class Deployment(BackgroundService):
             try:
                 j.logger.info(f"Deploying for user {username}")
                 client = j.tools.terraform.get(username)
+                client = client.get(username)
                 client.hcl_content = j.sals.fs.read_file(TF_HCL_CONTENT_PATH)
-                client.init_dir()
+                client.providers_mirror()
+                client.init(use_plugin_dir=True)
                 if not self._apply_terraform(client, username):
                     j.logger.critical(f"all retries for deployment for user {username} has been failed")
                     user.status = UserStatus.FAILURE
@@ -82,24 +84,25 @@ class Deployment(BackgroundService):
                 
 
     def _destroy_terraform(self, client, name):
-        for _ in range(3):
-            j.logger.debug("trying to destroy old stuff")
+        for i in range(3):
+            j.logger.debug(f"try {i} to destroy the instance for user {name}")
             return_code, res = client.destroy({"user":name})
             if return_code != 0:
-                j.logger.error(f"failed to deploy for user {name}, trying again .., error message:\n{res[-1]}")
+                j.logger.error(f"failed to deploy for user {name}, error message:\n{res[-1]}")
                 continue
             break
 
 
     def _apply_terraform(self, client, name):
-        for _ in range(3):
+        for i in range(3):
+            j.logger.debug(f"try {i} to deploy the instance for user {name}")
             user = user_model.get(name)
             user.status = UserStatus.PENDING
             if client.status == TFStatus.APPLIED:
                 return True
             return_code, res = client.apply({"user":name})
             if return_code != 0:
-                j.logger.error(f"failed to deploy for user {name}, trying again .., error message:\n{res[-1]}")
+                j.logger.error(f"failed to deploy for user {name}, error message:\n{res[-1]}")
                 self._destroy_terraform(client, name)
                 continue
             return True
