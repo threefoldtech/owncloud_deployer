@@ -30,6 +30,16 @@
       <template v-slot:item.etime="{ item }">{{
         time(item.expired_timestamp)
       }}</template>
+      <template v-slot:item.data-table-select="{ item }">
+        <v-checkbox
+          v-if="item.status == 'NEW' || item.status == 'APPLY_FAILURE'"
+          class="pa-0 ma-0"
+          :ripple="false"
+          v-model="selected"
+          :value="item"
+          hide-details
+        ></v-checkbox>
+      </template>
     </v-data-table>
     <div class="text-center pt-2 mt-10">
       <v-btn class="mr-2 bg-blue white--text" @click="deploy(selected)"
