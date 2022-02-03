@@ -81,8 +81,6 @@ class DestroyExpired(BackgroundService):
                     j.logger.debug(f"destroy_expired service released tf lock")
                 else:
                     j.logger.info(f"user {user.tname} is still in trial period, skip")
-            else:
-                j.logger.info(f"user {user.tname} hasn't started the trail period yet, skip")
         j.logger.debug("DestroyExpired service has finished")
 
 
