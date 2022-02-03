@@ -12,7 +12,7 @@
       :loading="isLoading"
       loading-text="Loading... Please wait"
       v-model="selected"
-      :items-per-page="5"
+      :items-per-page="15"
     >
       <template v-slot:item.index="{ item }">{{ item.index }}</template>
       <template v-slot:item.email="{ item }">{{
