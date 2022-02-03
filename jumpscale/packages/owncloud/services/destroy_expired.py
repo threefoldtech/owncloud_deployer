@@ -30,7 +30,7 @@ class DestroyExpired(BackgroundService):
                 # get the trail period for this user
                 trail_period = TRIAL_PERIOD
                 # check if the deployment is expired
-                if j.data.time.get(user.deployment_timestamp).timestamp + trail_period < j.data.time.utcnow().timestamp:
+                if j.data.time.utcnow().timestamp > int(user.deployment_timestamp.timestamp()) + trail_period:
                     # to avoid notifying the user / seting the expired timestamp multiple times
                     if user.status == UserStatus.DEPLOYED:
                         notify_user = True
