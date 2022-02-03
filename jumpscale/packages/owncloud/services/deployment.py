@@ -88,7 +88,7 @@ class Deployment(BackgroundService):
 
     def _destroy_terraform(self, client, name):
         for i in range(3):
-            j.logger.debug(f"try {i} to clean up the failed deployment for user {name}")
+            j.logger.debug(f"try {i + 1}/3 to clean up the failed deployment for user {name}")
             return_code, res = client.destroy({"user":name})
             if return_code != 0:
                 j.logger.error(f"failed to clean up the the failed deployment for user {name}, error message:\n{res[-1]}")
@@ -98,7 +98,7 @@ class Deployment(BackgroundService):
 
     def _apply_terraform(self, client, name):
         for i in range(3):
-            j.logger.debug(f"try {i} to deploy the instance for user {name}")
+            j.logger.debug(f"try {i + 1}/3 to deploy the instance for user {name}")
             if client.status == TFStatus.APPLIED:
                 return True
             return_code, res = client.apply({"user":name})
