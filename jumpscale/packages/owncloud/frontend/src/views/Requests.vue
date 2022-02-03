@@ -190,11 +190,23 @@ export default {
 .v-chip.PENDING {
   background-color: #9ea7ad !important;
 }
-.v-chip.DONE {
+.v-chip.DEPLOYING {
+  background-color: #9ea7ad !important;
+}
+.v-chip.DESTROYING {
+  background-color: #6a6f72 !important;
+}
+.v-chip.DEPLOYED {
   background-color: #56f000 !important;
 }
-.v-chip.FAILURE {
+.v-chip.EXPIRED {
+  background-color: #000000 !important;
+}
+.v-chip.APPLY_FAILURE {
   background-color: #ff3838 !important;
+}
+.v-chip.DESTROY_FAILURE {
+  background-color: #690404 !important;
 }
 .bg-blue {
   background-color: #041e42 !important;
