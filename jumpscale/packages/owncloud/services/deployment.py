@@ -28,16 +28,16 @@ class Deployment(BackgroundService):
         """
         while True:
             user_info_json = j.core.db.blpop(DEPLOYMENT_QUEUE)[1]
-            if not user_info_json:
-                j.logger.error("queue is empty!")
-                break
-            tf_lock.lock.acquire()
-            j.logger.debug(f"deployment service acquired tf lock")
-            username = j.data.serializers.json.loads(user_info_json)
-            user = user_model.get(username)
-            user.status = UserStatus.DEPLOYING
-            user.save()
             try:
+                if not user_info_json:
+                    j.logger.error("queue is empty!")
+                    break
+                tf_lock.lock.acquire()
+                j.logger.debug(f"deployment service acquired tf lock")
+                username = j.data.serializers.json.loads(user_info_json)
+                user = user_model.get(username)
+                user.status = UserStatus.DEPLOYING
+                user.save()
                 j.logger.info(f"Deploying for user {username}")
                 client = j.tools.terraform.get(username)
                 client.hcl_content = j.sals.fs.read_file(TF_HCL_CONTENT_PATH)
