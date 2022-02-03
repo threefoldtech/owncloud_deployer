@@ -72,7 +72,8 @@ class DestroyExpired(BackgroundService):
                         j.logger.exception(f"failed to deploy for user {user.tname}", e)
                         user.status = UserStatus.DESTROY_FAILURE
                         user.save()
-                j.logger.info(f"user {user.tname} is still in trial period, skip")
+                else:
+                    j.logger.info(f"user {user.tname} is still in trial period, skip")
             # j.logger.info(f"user {user.tname} is not in trial period, skip")
         j.logger.debug("DestroyExpired service has finished")
 
