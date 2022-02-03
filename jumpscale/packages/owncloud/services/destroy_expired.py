@@ -28,15 +28,15 @@ class DestroyExpired(BackgroundService):
         """
         users = user_model.list_all()
         for user_name in users:
-            with TF_Lock.lock.acquire():
-                j.logger.debug(f"destroy_expired service acquired tf lock")
-                user = user_model.get(user_name)
-                if user.status in [UserStatus.DEPLOYED, UserStatus.DESTROY_FAILURE]:
-                    # get the trail period for this user
-                    trail_period = TRIAL_PERIOD
-                    notify_user = False
-                    # check if the deployment is expired
-                    if j.data.time.utcnow().timestamp > int(user.deployment_timestamp.timestamp()) + trail_period:
+            user = user_model.get(user_name)
+            if user.status in [UserStatus.DEPLOYED, UserStatus.DESTROY_FAILURE]:
+                # get the trail period for this user
+                trail_period = TRIAL_PERIOD
+                notify_user = False
+                # check if the deployment is expired
+                if j.data.time.utcnow().timestamp > int(user.deployment_timestamp.timestamp()) + trail_period:
+                    with TF_Lock.lock:
+                        j.logger.debug(f"destroy_expired service acquired tf lock")
                         # to avoid notifying the user / seting the expired timestamp multiple times
                         if user.status == UserStatus.DEPLOYED:
                             notify_user = True
@@ -78,10 +78,11 @@ class DestroyExpired(BackgroundService):
                             j.logger.exception(f"failed to deploy for user {user.tname}", e)
                             user.status = UserStatus.DESTROY_FAILURE
                             user.save()
-                    else:
-                        j.logger.info(f"user {user.tname} is still in trial period, skip")
-                # j.logger.info(f"user {user.tname} is not in trial period, skip")
-            j.logger.debug(f"destroy_expired service released tf lock")
+                    j.logger.debug(f"destroy_expired service released tf lock")
+                else:
+                    j.logger.info(f"user {user.tname} is still in trial period, skip")
+            else:
+                j.logger.info(f"user {user.tname} hasn't started the trail period yet, skip")
         j.logger.debug("DestroyExpired service has finished")
 
 
