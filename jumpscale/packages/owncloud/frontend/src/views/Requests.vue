@@ -23,7 +23,13 @@
           <v-chip class="status" :class="item.status">{{ item.status }}</v-chip>
         </td>
       </template>
-      <template v-slot:item.time="{ item }">{{ time(item.time) }}</template>
+      <template v-slot:item.rtime="{ item }">{{ time(item.time) }}</template>
+      <template v-slot:item.dtime="{ item }">{{
+        time(item.deployment_timestamp)
+      }}</template>
+      <template v-slot:item.etime="{ item }">{{
+        time(item.expired_timestamp)
+      }}</template>
     </v-data-table>
     <div class="text-center pt-2 mt-10">
       <v-btn class="mr-2 bg-blue white--text" @click="deploy(selected)"
@@ -53,7 +59,9 @@ export default {
         { text: "Name", value: "tname" },
         { text: "Email", value: "email" },
         { text: "Status", value: "status" },
-        { text: "Time", value: "time" },
+        { text: "Request time", value: "rtime" },
+        { text: "Deploy time", value: "dtime" },
+        { text: "Expire time", value: "etime" },
         {
           text: "Admin Selection",
           value: "data-table-select",
@@ -146,9 +154,12 @@ export default {
       return str;
     },
     time(ts) {
-      var timestamp = moment.unix(ts);
-      var now = new Date();
-      return timestamp.to(now);
+      if (ts) {
+        var now = new Date();
+        var timestamp = moment.unix(now / 1000);
+        return timestamp.to(ts * 1000);
+      }
+      return "-";
     },
   },
   computed: {
