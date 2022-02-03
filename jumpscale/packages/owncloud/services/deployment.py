@@ -5,11 +5,12 @@ from owncloud.models import user_model
 from owncloud.models.users import UserStatus
 from jumpscale.tools.terraform.terraform import TFStatus
 
+from owncloud.models.lock import Lock
 DEPLOYMENT_QUEUE = "DEPLOYMENT_QUEUE"
 MAIL_QUEUE = "MAIL_QUEUE"
 TF_HCL_CONTENT_PATH = j.sals.fs.expanduser("~/hcl_content.tf")
 
-
+tf_lock = Lock()
 class Deployment(BackgroundService):
     def __init__(self, interval=60 * 10, *args, **kwargs):
         """
@@ -30,6 +31,8 @@ class Deployment(BackgroundService):
             if not user_info_json:
                 j.logger.error("queue is empty!")
                 break
+            tf_lock.lock.acquire()
+            j.logger.debug(f"deployment service acquired tf lock")
             username = j.data.serializers.json.loads(user_info_json)
             user = user_model.get(username)
             user.status = UserStatus.DEPLOYING
@@ -84,6 +87,10 @@ class Deployment(BackgroundService):
                 j.logger.exception(f"failed to deploy for user {username}", e)
                 user.status = UserStatus.APPLY_FAILURE
                 user.save()
+            finally:
+                tf_lock.lock.release()
+                j.logger.debug(f"deployment service released tf lock")
+
                 
 
     def _destroy_terraform(self, client, name):
