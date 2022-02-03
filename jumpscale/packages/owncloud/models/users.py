@@ -5,10 +5,12 @@ from jumpscale.core.base import Base, fields
 class UserStatus(Enum):
     NEW = "NEW"
     PENDING = "PENDING"
-    PROGRESSING = "PROGRESSING"
-    DONE = "DONE"
-    FAILURE = "FAILURE"
-
+    DEPLOYING = "DEPLOYING"
+    DESTROYING = "DESTROYING"
+    DEPLOYED = "DEPLOYED"
+    EXPIRED = "EXPIRED"
+    APPLY_FAILURE = "APPLY_FAILURE"
+    DESTROY_FAILURE = "DESTROY_FAILURE"
 
 class UserModel(Base):
     tname = fields.String()
@@ -16,3 +18,4 @@ class UserModel(Base):
     status = fields.Enum(UserStatus)
     time = fields.DateTime()
     deployment_timestamp = fields.DateTime()
+    expired_timestamp = fields.DateTime()

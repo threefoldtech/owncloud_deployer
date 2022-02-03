@@ -32,7 +32,7 @@ class Deployment(BackgroundService):
                 break
             username = j.data.serializers.json.loads(user_info_json)
             user = user_model.get(username)
-            user.status = UserStatus.PROGRESSING
+            user.status = UserStatus.DEPLOYING
             user.save()
             try:
                 j.logger.info(f"Deploying for user {username}")
@@ -42,11 +42,11 @@ class Deployment(BackgroundService):
                 client.init(use_plugin_dir=True)
                 if not self._apply_terraform(client, username):
                     j.logger.critical(f"all retries for deployment for user {username} has been failed")
-                    user.status = UserStatus.FAILURE
+                    user.status = UserStatus.APPLY_FAILURE
                     user.save()
                     continue
 
-                user.status = UserStatus.DONE
+                user.status = UserStatus.DEPLOYED
                 user.deployment_timestamp = j.data.time.utcnow().timestamp
                 user.save()
                 j.logger.info(f"Deployment success for user {username}")
@@ -82,7 +82,7 @@ class Deployment(BackgroundService):
             except Exception as e:
                 j.logger.error(f"failed to deploy for user {username}, error message:\n{e.args}")
                 j.logger.exception(f"failed to deploy for user {username}", e)
-                user.status = UserStatus.FAILURE
+                user.status = UserStatus.APPLY_FAILURE
                 user.save()
                 
 

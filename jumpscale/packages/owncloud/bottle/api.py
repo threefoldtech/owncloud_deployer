@@ -83,7 +83,7 @@ def deploy_instances():
     
     for username in users:
         user = user_model.get(username)
-        if user.status not in [UserStatus.DONE, UserStatus.PENDING, UserStatus.PROGRESSING]:
+        if user.status in [UserStatus.APPLY_FAILURE, UserStatus.NEW]:
             user.status = UserStatus.PENDING
             user.save()
             j.core.db.rpush(DEPLOYMENT_QUEUE, j.data.serializers.json.dumps(username))
