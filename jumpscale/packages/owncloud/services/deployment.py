@@ -54,14 +54,14 @@ class Deployment(BackgroundService):
                 return_code, domain = client.get_output(output_name="fqdn")
 
                 if return_code != 0:
-                    j.logger.critical(f"failed to deploy for user {username}, {domain}")
+                    j.logger.critical(f"failed to get output value 'fqdn' for user {username}, {domain}")
                     continue
                 admin_username = "admin"
                 
                 return_code, admin_password = client.get_output(output_name="admin_passwords")
                 
                 if return_code != 0:
-                    j.logger.critical(f"failed to deploy for user {username}, {admin_password}")
+                    j.logger.critical(f"failed to get output value 'admin_passwords' for user {username}, {admin_password}")
                     continue
 
                 # send email
@@ -79,13 +79,11 @@ class Deployment(BackgroundService):
                 }
                 j.logger.info(f"Sending mail for user {username}")
                 j.core.db.rpush(MAIL_QUEUE, j.data.serializers.json.dumps(mail_info))
-                j.logger.info(f"Mail sent successfully {dedent(message)}")
             except Exception as e:
                 j.logger.error(f"failed to deploy for user {username}, error message:\n{e.args}")
                 j.logger.exception(f"failed to deploy for user {username}", e)
                 user.status = UserStatus.FAILURE
                 user.save()
-                continue
                 
 
     def _destroy_terraform(self, client, name):
