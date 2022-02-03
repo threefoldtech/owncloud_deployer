@@ -19,3 +19,4 @@ class UserModel(Base):
     time = fields.DateTime()
     deployment_timestamp = fields.DateTime()
     expired_timestamp = fields.DateTime()
+    trial_period = fields.Integer(default=90 * 24 * 60 * 60)
