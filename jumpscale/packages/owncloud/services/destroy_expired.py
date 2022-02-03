@@ -8,7 +8,7 @@ from owncloud.models.lock import Lock
 
 MAIL_QUEUE = "MAIL_QUEUE"
 #TF_HCL_CONTENT_PATH = j.sals.fs.expanduser("~/hcl_content.tf")
-TRIAL_PERIOD = 60 * 5 # for testing purposes only
+TRIAL_PERIOD = 60 * 20 # for testing purposes only
 
 TF_Lock = Lock()
 class DestroyExpired(BackgroundService):
