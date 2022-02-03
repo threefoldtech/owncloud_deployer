@@ -114,7 +114,12 @@ export default {
 
     exportCSVFile(items) {
       // Convert Object to JSON
-      var exportedFilenmae = "data.csv";
+      const date = new Date().toDateString().replaceAll(" ", "");
+      const time = new Date()
+        .toLocaleTimeString()
+        .replaceAll(":", "_")
+        .replace(" ", "");
+      var exportedFilenmae = `backup_${date}_${time}.csv`;
 
       var blob = new Blob([items], { type: "text/csv;charset=utf-8;" });
       if (navigator.msSaveBlob) {
