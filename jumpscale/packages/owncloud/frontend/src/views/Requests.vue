@@ -106,13 +106,9 @@ export default {
 
     exportCSVFile(items) {
       // Convert Object to JSON
-      var jsonObject = JSON.stringify(items);
-
-      var csv = this.convertToCSV(jsonObject);
-
       var exportedFilenmae = "data.csv";
 
-      var blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      var blob = new Blob([items], { type: "text/csv;charset=utf-8;" });
       if (navigator.msSaveBlob) {
         // IE 10+
         navigator.msSaveBlob(blob, exportedFilenmae);
