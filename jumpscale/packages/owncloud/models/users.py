@@ -1,5 +1,6 @@
 from enum import Enum
 from jumpscale.core.base import Base, fields
+from jumpscale.loader import j
 
 
 class UserStatus(Enum):
@@ -12,6 +13,7 @@ class UserStatus(Enum):
     APPLY_FAILURE = "APPLY_FAILURE"
     DESTROY_FAILURE = "DESTROY_FAILURE"
 
+
 class UserModel(Base):
     tname = fields.String()
     email = fields.Email()
@@ -19,4 +21,11 @@ class UserModel(Base):
     time = fields.DateTime()
     deployment_timestamp = fields.DateTime()
     expired_timestamp = fields.DateTime()
-    trial_period = fields.Integer(default=90 * 24 * 60 * 60)
+    trial_period = fields.Integer(default=20 * 60)
+
+    @property
+    def is_expired(self):
+        return (
+            j.data.time.utcnow().timestamp
+            > int(self.deployment_timestamp.timestamp()) + self.trial_period
+        )
