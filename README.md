@@ -6,6 +6,7 @@ jumpscale based package for owncloud 3 month fremuim deployment
 
 - python > 3.8
 - js-sdk
+- npm > 14 && yarn
 
 ## Endpoints
 
@@ -64,3 +65,25 @@ Example response
 ### `/owncloud/api/requests/export` [GET] (admin only)
 
 - Download a copy of all registered users as csv
+
+### Frontend
+
+- Build go to `jumpscale/packages/owncloud/frontend` and do `yarn && yarn build`
+- Push your changes
+
+### Docker
+
+```bash
+docker run -ti --name owncloud   waleedhammam/owncloud-dep -e domain="waleed.threefold.io" -e email_host="smtp.gmail.com" -e email_port=587 -e email_username="<email>" -e email_password="<password>" -e MNEMONICS="<MNEMONICS>" -e CHAIN_URL="wss://tfchain.dev.grid.tf/ws" -e NETWORK="dev" -e ADMINS=["waleedhammam.3bot"] -e ALERT_EMAIL="waleed.hammam@gmail.com"
+```
+
+#### env
+  
+- `domain`: domain of the site which will host the package (done in package.toml)
+- `email_host`, `email_port`, `email_username`, `email_password`: configurations of mail server
+- `MNEMONICS`: words of the account being used to deploy from
+- `CHAIN_URL`: url for the tfchain according to network
+- `NETWORK`: network to deploy on (default: devnet)
+- `ADMINS`: list of system admins that will manage requests
+- `ALERT_EMAIL`: email which will receive wallet alerts
+  

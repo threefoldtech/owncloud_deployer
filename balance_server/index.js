@@ -4,8 +4,8 @@ const Client = require('tfgrid-api-client')
 const app = express()
 const port = 3001
 
-const url = "wss://tfchain.dev.grid.tf/ws"
-const mnemonic = "talent electric save cabbage write chuckle small only happy resist slight engine"
+const url = process.env.CHAIN_URL
+const mnemonic = process.env.MNEMONICS 
 const scheme = "sr25519"
 const client = new Client(url, mnemonic, scheme)
 

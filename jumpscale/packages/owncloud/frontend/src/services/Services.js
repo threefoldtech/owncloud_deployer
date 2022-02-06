@@ -10,6 +10,16 @@ const ownCloudClient = Axios.create({
     }
 })
 
+const adminClient = Axios.create({
+    baseURL: '/',
+    withCredentials: true,
+    headers: {
+        "Accept": 'application/json',
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+    }
+})
+
 export default {
     sendMails(email) {
         return ownCloudClient.post('/requests', { email: email })
@@ -25,5 +35,8 @@ export default {
     },
     deploy(names) {
         return ownCloudClient.post('/deployment', names)
-    }
+    },
+    getCurrentUser() {
+        return adminClient.get('/auth/authenticated')
+    },
 }

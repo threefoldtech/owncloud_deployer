@@ -1,0 +1,4 @@
+exec: node /owncloud_deployer/balance_server/index.js
+log: stdout
+after:
+  - init

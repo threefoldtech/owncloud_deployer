@@ -32,20 +32,21 @@
       <v-col cols="6" md="7" class="d-flex" style="flex-direction: column">
         <v-card class="ma-md-16 pa-md-16 mx-lg-auto align-center flex-grow-1">
           <p>
-            Please enter your email to get creds and domain for you instance on.
-            If not provided email TF connect will be used.
+            {{ tfmail }} will be used to send you your deployment information.
+            If you prefer to receive emails on a different address, fill in
+            below
           </p>
           <v-form ref="form" v-model="valid" lazy-validation>
             <v-text-field
               v-model="email"
               :rules="emailRules"
-              label="E-mail"
+              label="E-mail (optional)"
             ></v-text-field>
 
             <v-checkbox
               v-model="checkbox"
               :rules="[(v) => !!v || 'You must agree to continue!']"
-              label="Agree at Terms &amp; conditions"
+              label="I have read and I accept the terms and conditions"
               required
             ></v-checkbox>
 
@@ -86,7 +87,8 @@ import Service from "../services/Services";
 
 export default {
   data: () => ({
-    title: "Welcome to Owncloud Free Deployment",
+    title: "Welcome to the Freemium Owncloud Deployer",
+    tfmail: "TF-Connect Email",
     valid: true,
     email: "",
     emailRules: [
@@ -116,6 +118,15 @@ export default {
           this.message = error.response.data;
         });
     },
+    getCurrentUserEmail() {
+      Service.getCurrentUser()
+        .then((response) => {
+          this.tfmail = response.data.email;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
     reset() {
       this.$refs.form.reset();
     },
@@ -124,6 +135,9 @@ export default {
     deviceHeight() {
       return this.$vuetify.breakpoint.height;
     },
+  },
+  mounted() {
+    this.getCurrentUserEmail();
   },
 };
 </script>

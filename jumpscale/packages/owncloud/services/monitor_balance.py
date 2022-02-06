@@ -1,8 +1,9 @@
+import os
 from jumpscale.tools.servicemanager.servicemanager import BackgroundService
 from jumpscale.loader import j
 
 MAIL_QUEUE = "MAIL_QUEUE"
-EMAIL = "waleed.hammam@gmail.com" # to be set later
+EMAIL = os.environ.get("ALERT_EMAIL")
 
 class BalanceChecker(BackgroundService):
     def __init__(self, interval=10 * 60, *args, **kwargs):

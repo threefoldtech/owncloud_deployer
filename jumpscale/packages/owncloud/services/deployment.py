@@ -69,10 +69,11 @@ class Deployment(BackgroundService):
 
                 # send email
                 message = f"""\
-                Owncloud instance will be ready in few minutes, please use these credentials to access your instance \n
-                Domain: {domain} \n
-                Admin username: {admin_username} \n
-                Admin password: {admin_password} \n
+                    Dear {user.tname}
+                Your Owncloud instance will be ready in few minutes, please use these credentials to access it. \n
+                Domain: {domain}
+                Admin username: {admin_username}
+                Admin password: {admin_password}
                 """
                 mail_info = {
                     "recipients_emails": user.email,

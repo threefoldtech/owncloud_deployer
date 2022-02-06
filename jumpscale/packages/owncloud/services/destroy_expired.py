@@ -44,7 +44,7 @@ class DestroyExpired(BackgroundService):
                         j.logger.info(f"user {user.tname} deployment is expired")
                         message = f"""\
                         Dear {user.tname}, \n
-                            Your deployment is expired.
+                            Your deployment has expired.
                         """
                         mail_info = {
                             "recipients_emails": user.email,

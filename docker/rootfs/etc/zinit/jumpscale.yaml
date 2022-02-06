@@ -1,0 +1,4 @@
+exec: jsng "j.servers.threebot.start_default(wait=True, local=False)"
+log: stdout
+after:
+  - balance

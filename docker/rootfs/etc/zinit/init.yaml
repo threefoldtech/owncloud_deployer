@@ -1,0 +1,3 @@
+exec: /owncloud_deployer/init.sh
+log: stdout
+oneshot: true

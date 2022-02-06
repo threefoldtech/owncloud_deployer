@@ -48,7 +48,7 @@ def create_user():
 
     if username in user_model.list_all():
         return HTTPResponse(
-            f"user {username} has already submitted request before",
+            f"user {username} has already submitted a request. please be patient while we prepare your deployment",
             status=409,
             headers={"Content-Type": "application/json"},
         )
@@ -60,7 +60,7 @@ def create_user():
     user.time = j.data.time.utcnow().timestamp
     user.save()
     return HTTPResponse(
-        f"Thanks for submission, Request will be processed soon.",
+        f"Your request will be processed soon. You'll receive your deployment information at {user.email}",
         status=201,
         headers={"Content-Type": "application/json"},
     )
