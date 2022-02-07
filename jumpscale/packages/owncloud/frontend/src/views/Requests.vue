@@ -2,22 +2,6 @@
   <div>
     <Navbar />
     <BalanceCard @setBalance="setBalance" />
-    <v-dialog
-      transition="dialog-top-transition"
-      v-model="dialog"
-      max-width="600"
-    >
-      <template>
-        <v-card>
-          <v-card-text>
-            <div class="text-h5 pa-12">{{ message }}</div>
-          </v-card-text>
-          <v-card-actions class="justify-end">
-            <v-btn text @click="dialog = false">Close</v-btn>
-          </v-card-actions>
-        </v-card>
-      </template>
-    </v-dialog>
     <h4 class="h4 pa-5">Requests:</h4>
     <v-data-table
       class="ma-5 elevation-1"
@@ -30,6 +14,9 @@
       v-model="selected"
       :items-per-page="15"
     >
+      <template v-slot:header.data-table-select>
+        <v-checkbox :disabled="disabled"></v-checkbox>
+      </template>
       <template v-slot:item.index="{ item }">{{ item.index }}</template>
       <template v-slot:item.email="{ item }">{{
         item.email == "" ? "-" : item.email
@@ -98,10 +85,7 @@ export default {
       isLoading: true,
       requests: [],
       selected: [],
-      balance: null,
       disabled: false,
-      dialog: false,
-      message: "",
     };
   },
   methods: {
@@ -198,12 +182,8 @@ export default {
       return "-";
     },
     setBalance(data) {
-      this.balance = data;
-      if (this.balance < 1000) {
+      if (data) {
         this.disabled = true;
-        this.dialog = true;
-        this.message =
-          "New deployments has been disabled because balance < 1000";
       }
     },
   },
