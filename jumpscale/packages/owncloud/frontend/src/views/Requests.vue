@@ -34,8 +34,8 @@
       <template v-slot:item.data-table-select="{ item, isSelected, select }">
         <v-simple-checkbox
           :value="isSelected"
-          :readonly="!statusChecker(item.status)"
-          :disabled="!statusChecker(item.status)"
+          :readonly="!statusChecker(item.status) || balance < 1000"
+          :disabled="!statusChecker(item.status) || balance < 1000"
           @input="select($event)"
         ></v-simple-checkbox>
       </template>
@@ -82,6 +82,7 @@ export default {
       selected: [],
       disabled: false,
       disabledCount: 0,
+      balance: null,
     };
   },
   methods: {
@@ -192,9 +193,7 @@ export default {
       return "-";
     },
     setBalance(data) {
-      if (data) {
-        this.disabled = true;
-      }
+      this.balance = data;
     },
     disabledItems() {
       this.requestsWithIndex.map((item) => {
