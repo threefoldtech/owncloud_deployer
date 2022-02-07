@@ -1,7 +1,7 @@
 <template>
   <div>
     <Navbar />
-    <BalanceCard setBalance="setBalance" />
+    <BalanceCard @setBalance="setBalance" />
     <v-dialog
       transition="dialog-top-transition"
       v-model="dialog"
@@ -54,7 +54,7 @@
           v-model="selected"
           :value="item"
           hide-details
-          :disable="disable"
+          :disabled="disabled"
         ></v-checkbox>
       </template>
     </v-data-table>
@@ -99,7 +99,7 @@ export default {
       requests: [],
       selected: [],
       balance: null,
-      disable: false,
+      disabled: false,
       dialog: false,
       message: "",
     };
@@ -200,7 +200,7 @@ export default {
     setBalance(data) {
       this.balance = data;
       if (this.balance < 1000) {
-        this.disable = true;
+        this.disabled = true;
         this.dialog = true;
         this.message =
           "New deployments has been disabled because balance < 1000";

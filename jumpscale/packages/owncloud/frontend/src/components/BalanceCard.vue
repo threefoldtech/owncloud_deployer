@@ -15,6 +15,7 @@
 import Service from "../services/Services";
 
 export default {
+  props: ["setBalance"],
   data() {
     return {
       balance: null,
