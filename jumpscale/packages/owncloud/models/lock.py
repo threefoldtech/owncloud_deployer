@@ -1,4 +1,4 @@
-import threading
+from gevent.lock import BoundedSemaphore
 
 class Singleton(type):
     _instances = {}
@@ -9,4 +9,4 @@ class Singleton(type):
 
 class Lock(metaclass=Singleton):
     # Declaring a lock
-    lock = threading.Lock()
+    lock = BoundedSemaphore()
