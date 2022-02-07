@@ -2,69 +2,19 @@
 
 jumpscale based package for owncloud 3 month fremuim deployment
 
+- user will ask to acquire his free instance
+- devops will approve the request
+- deployment will be done from the pre-configured account
+- user will receive email with deployment status and credentials
+- destruction service will destroy the deployment after the trial is over (90 days)
+- an email will be sent to user with trial is over
+- there's also a service to check wallet balance if it's < 1000 it'll send email to support
+
 ## requirements
 
 - python > 3.8
 - js-sdk
 - npm > 14 && yarn
-
-## Endpoints
-
-### `/owncloud/api/requests` [GET] (admin only)
-
-- Get all registered users with statuses as a list.
-
-Example response
-
-```json
-    [
-        {
-        "tname": "waleedhammam",
-        "email": "waleed.hammam@gmail.com",
-        "status": "DONE",
-        "time": 1643638522
-        }
-    ]
-
-```
-
-### `/owncloud/api/requests` [POST]
-
-- Register new user with email if provided (optional)
-
-Example body : `{email: "someone@example.com}`
-
-Responses:
-
-- If user is not registered before, you'll have `201` + successful msg
-- If user is registered before, you'll get `409` + error msg
-
-### `/owncloud/api/deployment` [POST] (admin only)
-
-- for Support to deploy instances for users and mark them as done
-
-- Example body : `[waleedhammam]`
-
-Responses:
-
-- If success, you'll have `200` + successful msg
-- If error, you'll have error code + error msg
-
-### `/owncloud/api/balance` [GET] (admin only)
-
-- Get current balance
-
-Example response
-
-```json
-{
-    "balance": "9733.4300505"
-}
-```
-
-### `/owncloud/api/requests/export` [GET] (admin only)
-
-- Download a copy of all registered users as csv
 
 ### Frontend
 
@@ -86,4 +36,85 @@ docker run -ti --name owncloud   waleedhammam/owncloud-dep -e domain="waleed.thr
 - `NETWORK`: network to deploy on (default: dev)
 - `ADMINS`: list of system admins that will manage requests
 - `ALERT_EMAIL`: email which will receive wallet alerts
-  
+
+### Helm
+
+Refer to helm docs in [helmcharts/owncloud/README.md](helmcharts/owncloud/README.md)
+
+#### local running
+
+1- Export previous variables
+2- Configure mail client
+
+  ```bash
+  j.core.config.set("EMAIL_SERVER_CONFIG", {'host': 'smtp.gmail.com', 'port': '587', 'username': '', 'password': ''}) 
+  ```
+
+3- build frontend
+3- Add the package to the server
+4- Start the server
+5- Go to <https://domain> you'll find the website
+
+### User Endpoints
+
+- `/`: in this page user will enter his email address, if it's empty TF-Connect email will be taken
+
+- `/#/requests`: in this page dev-ops can approve requests to start deployment and check the statuses
+
+#### Endpoints
+
+##### `/owncloud/api/requests` [GET] (admin only)
+
+- Get all registered users with statuses as a list.
+
+Example response
+
+```json
+    [
+        {
+        "tname": "waleedhammam",
+        "email": "waleed.hammam@gmail.com",
+        "status": "DONE",
+        "time": 1643638522
+        }
+    ]
+
+```
+
+##### `/owncloud/api/requests` [POST]
+
+- Register new user with email if provided (optional)
+
+Example body : `{email: "someone@example.com}`
+
+Responses:
+
+- If user is not registered before, you'll have `201` + successful msg
+- If user is registered before, you'll get `409` + error msg
+
+##### `/owncloud/api/deployment` [POST] (admin only)
+
+- for Support to deploy instances for users and mark them as done
+
+- Example body : `[waleedhammam]`
+
+Responses:
+
+- If success, you'll have `200` + successful msg
+- If error, you'll have error code + error msg
+
+##### `/owncloud/api/balance` [GET] (admin only)
+
+- Get current balance
+
+Example response
+
+```json
+{
+    "balance": "9733.4300505"
+}
+```
+
+##### `/owncloud/api/requests/export` [GET] (admin only)
+
+- Download a copy of all registered users as csv

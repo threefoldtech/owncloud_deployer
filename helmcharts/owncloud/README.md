@@ -36,3 +36,13 @@
     ```bash
     helm install -f values.yaml owncloud . --set ingress.host="free.3botmain.grid.tf" --set env.MNEMONICS="" --set env.NETWORK="dev" --set env.CHAIN_URL="wss://tfchain.dev.grid.tf/ws" --set env.ALERT_EMAIL="waleed.hammam@gmail.com" --set env.email_host="smtp.gmail.com" --set env.email_port=587 --set env.email_username="" --set env.email_password="" --set env.ADMINS="['waleedhammam.3bot']"
     ```
+
+### Env variables
+
+- `domain`: domain of the site which will host the package (done in package.toml)
+- `email_host`, `email_port`, `email_username`, `email_password`: configurations of mail server
+- `MNEMONICS`: words of the account being used to deploy from
+- `CHAIN_URL`: url for the tfchain according to network
+- `NETWORK`: network to deploy on (default: dev)
+- `ADMINS`: list of system admins that will manage requests
+- `ALERT_EMAIL`: email which will receive wallet alerts
