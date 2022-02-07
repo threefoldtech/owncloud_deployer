@@ -11,7 +11,7 @@
       </v-list-item>
     </v-card>
     <v-alert
-      v-if="balance < 1000"
+      v-if="balance && balance < 1000"
       class="mb-16 mx-auto"
       max-width="344"
       dense
