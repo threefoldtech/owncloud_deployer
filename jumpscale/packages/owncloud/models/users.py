@@ -3,6 +3,12 @@ from jumpscale.core.base import Base, fields
 from jumpscale.loader import j
 
 
+def reset_error_message(instance, value):
+    if value not in [UserStatus.APPLY_FAILURE, UserStatus.DESTROY_FAILURE]:
+        instance.error_message = ""
+        instance.save()
+
+
 class UserStatus(Enum):
     NEW = "NEW"
     PENDING = "PENDING"
@@ -17,7 +23,7 @@ class UserStatus(Enum):
 class DeploymentModel(Base):
     tname = fields.String()
     email = fields.Email()
-    status = fields.Enum(UserStatus)
+    status = fields.Enum(UserStatus, on_update=reset_error_message)
     time = fields.DateTime()
     deployment_timestamp = fields.DateTime()
     expired_timestamp = fields.DateTime()
@@ -26,7 +32,9 @@ class DeploymentModel(Base):
 
     @property
     def is_expired(self):
-        return (
-            j.data.time.utcnow().timestamp
-            > int(self.deployment_timestamp.timestamp()) + self.trial_period
-        )
+        if self.deployment_timestamp.timestamp():
+            return (
+                j.data.time.utcnow().timestamp
+                > int(self.deployment_timestamp.timestamp()) + self.trial_period
+            )
+        return False

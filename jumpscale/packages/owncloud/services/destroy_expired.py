@@ -49,10 +49,12 @@ class DestroyExpired(BackgroundService):
                                 f"Destroying the expired instance for user {user.tname}"
                             )
                             client = j.tools.terraform.get(user.tname)
-                            if not _destroy_user_deployment(client, user.tname):
+                            res = _destroy_user_deployment(client, user.tname)
+                            if not res.is_ok:
                                 j.logger.critical(
                                     f"all retries for destroying deployment for user {user.tname} has been failed"
                                 )
+                                user.error_message = res.last_error
                                 user.status = UserStatus.DESTROY_FAILURE
                                 user.save()
                                 continue
@@ -87,8 +89,8 @@ def _destroy_user_deployment(client, name):
                 f"failed to destroy the the failed deployment for user {name}, error message:\n{res.last_error}"
             )
             continue
-        return True
-    return False
+        break
+    return res
 
 
 def _schedule_mail_task(user_name, user_email):
