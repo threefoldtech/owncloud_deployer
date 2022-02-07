@@ -26,6 +26,7 @@ export default {
         .then((response) => {
           this.balance = response.data.balance;
         })
+        .then(() => this.$emit("setBalance", this.balance))
         .catch((error) => {
           console.log("Error! Could not reach the API. " + error);
         });
