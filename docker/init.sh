@@ -1,11 +1,5 @@
 #!/bin/bash
 
-# pull latest changes
-cd /owncloud_deployer &&\
-  git stash && \
-  git pull && \
-  git stash pop
-
 # Edit the default domain with the passed one
 sed -i "s/domain = \"waleed.threefold.io\"/domain = \"$domain\"/g" /owncloud_deployer/jumpscale/packages/owncloud/package.toml 
 

@@ -83,7 +83,7 @@ docker run -ti --name owncloud   waleedhammam/owncloud-dep -e domain="waleed.thr
 - `email_host`, `email_port`, `email_username`, `email_password`: configurations of mail server
 - `MNEMONICS`: words of the account being used to deploy from
 - `CHAIN_URL`: url for the tfchain according to network
-- `NETWORK`: network to deploy on (default: devnet)
+- `NETWORK`: network to deploy on (default: dev)
 - `ADMINS`: list of system admins that will manage requests
 - `ALERT_EMAIL`: email which will receive wallet alerts
   
