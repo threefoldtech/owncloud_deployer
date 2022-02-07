@@ -1,4 +1,4 @@
-# owncloud fremuim deployment
+# Owncloud Fremuim Deployment
 
 jumpscale based package for owncloud 3 month fremuim deployment
 
