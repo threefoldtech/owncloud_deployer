@@ -1,7 +1,7 @@
 from jumpscale.loader import j
 from textwrap import dedent
 from jumpscale.tools.servicemanager.servicemanager import BackgroundService
-from owncloud.models import user_model
+from owncloud.models import deployment_model
 from owncloud.models.users import UserStatus
 
 from owncloud.models.lock import Lock
@@ -27,9 +27,9 @@ class RetryDeployment(BackgroundService):
 
     def retry_deploy(self):
         """loop in user model and check if the deployment in APPLY_FAILURE status and retry the deployment"""
-        users = user_model.list_all()
+        users = deployment_model.list_all()
         for user_name in users:
-            user = user_model.get(user_name)
+            user = deployment_model.get(user_name)
             if user.status == UserStatus.APPLY_FAILURE:
                 try:
                     user.status = UserStatus.PENDING

@@ -14,7 +14,7 @@ class UserStatus(Enum):
     DESTROY_FAILURE = "DESTROY_FAILURE"
 
 
-class UserModel(Base):
+class DeploymentModel(Base):
     tname = fields.String()
     email = fields.Email()
     status = fields.Enum(UserStatus)
@@ -22,6 +22,7 @@ class UserModel(Base):
     deployment_timestamp = fields.DateTime()
     expired_timestamp = fields.DateTime()
     trial_period = fields.Integer(default=20 * 60)
+    error_message = fields.String(default="")
 
     @property
     def is_expired(self):

@@ -1,7 +1,7 @@
 from jumpscale.loader import j
 from textwrap import dedent
 from jumpscale.tools.servicemanager.servicemanager import BackgroundService
-from owncloud.models import user_model
+from owncloud.models import deployment_model
 from owncloud.models.users import UserStatus
 
 from owncloud.models.lock import Lock
@@ -26,9 +26,9 @@ class DestroyExpired(BackgroundService):
 
     def destroy(self):
         """loop in user model and check if the deployment is expired"""
-        users = user_model.list_all()
+        users = deployment_model.list_all()
         for user_name in users:
-            user = user_model.get(user_name)
+            user = deployment_model.get(user_name)
             if user.status in [UserStatus.DEPLOYED, UserStatus.DESTROY_FAILURE]:
                 # check if the deployment is expired
                 if user.is_expired:
