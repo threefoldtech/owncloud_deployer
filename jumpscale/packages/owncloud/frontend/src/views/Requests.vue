@@ -13,10 +13,8 @@
       loading-text="Loading... Please wait"
       v-model="selected"
       :items-per-page="15"
+      @toggle-select-all="selectAllToggle"
     >
-      <template v-slot:header.data-table-select>
-        <v-checkbox :disabled="disabled"></v-checkbox>
-      </template>
       <template v-slot:item.index="{ item }">{{ item.index }}</template>
       <template v-slot:item.email="{ item }">{{
         item.email == "" ? "-" : item.email
@@ -33,16 +31,13 @@
       <template v-slot:item.etime="{ item }">{{
         time(item.expired_timestamp)
       }}</template>
-      <template v-slot:item.data-table-select="{ item }">
-        <v-checkbox
-          v-if="item.status == 'NEW' || item.status == 'APPLY_FAILURE'"
-          class="pa-0 ma-0"
-          :ripple="false"
-          v-model="selected"
-          :value="item"
-          hide-details
-          :disabled="disabled"
-        ></v-checkbox>
+      <template v-slot:item.data-table-select="{ item, isSelected, select }">
+        <v-simple-checkbox
+          :value="isSelected"
+          :readonly="item.status !== 'NEW' || item.status !== 'APPLY_FAILURE'"
+          :disabled="item.status !== 'NEW' || item.status !== 'APPLY_FAILURE'"
+          @input="select($event)"
+        ></v-simple-checkbox>
       </template>
     </v-data-table>
     <div class="text-center pt-2 mt-10">
@@ -86,13 +81,29 @@ export default {
       requests: [],
       selected: [],
       disabled: false,
+      disabledCount: 0,
     };
   },
   methods: {
+    selectAllToggle(props) {
+      if (
+        this.selected.length !=
+        this.requestsWithIndex.length - this.disabledCount
+      ) {
+        this.selected = [];
+        const self = this;
+        props.requestsWithIndex.forEach((item) => {
+          if (item.status == "NEW" || item.status == "APPLY_FAILURE") {
+            self.selected.push(item);
+          }
+        });
+      } else this.selected = [];
+    },
     getRequests() {
       Service.getRequests()
         .then((response) => {
           this.requests = response.data;
+          this.disabledItems();
           this.isLoading = false;
         })
         .catch((error) => {
@@ -193,6 +204,13 @@ export default {
         ...requests,
         index: index + 1,
       }));
+    },
+    disabledItems() {
+      const self = this;
+      this.requests.map((item) => {
+        if (item.status !== "NEW" || item.status !== "APPLY_FAILURE")
+          self.disabledCount += 1;
+      });
     },
   },
   mounted() {
