@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card class="mt-16 mx-auto" max-width="344" outlined>
+    <v-card v-if="balance" class="mt-16 mx-auto" max-width="344" outlined>
       <v-list-item>
         <v-list-item-content>
           <div class="text-center text-overline mb-4">Current balance</div>
