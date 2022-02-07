@@ -51,6 +51,8 @@ class Deployment(BackgroundService):
             user = deployment_model.get(user_name)
             try:
                 with tf_lock.lock:
+                    if user.status == UserStatus.DEPLOYED:
+                        continue
                     j.logger.debug(f"deployment service acquired tf lock")
                     user.status = UserStatus.DEPLOYING
                     user.save()
