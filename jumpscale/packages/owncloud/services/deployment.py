@@ -33,10 +33,10 @@ class Deployment(BackgroundService):
     def deploy(self):
         """pull tasks from redis queue, apply, retry, and mark deployments as done, or failed"""
         # check if the source module directory is exists and not empty
-        if not j.sals.fs.exists(SOURCE_MODULE_DIR) or j.sals.fs.is_empty_dir(
+        if not SOURCE_MODULE_DIR or not j.sals.fs.exists(SOURCE_MODULE_DIR) or j.sals.fs.is_empty_dir(
             SOURCE_MODULE_DIR
         ):
-            j.logger.critical("source module directory is not exists or empty")
+            j.logger.critical("source module directory is not set, not exists or empty")
             return
 
         while True:
