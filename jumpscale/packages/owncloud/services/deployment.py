@@ -8,10 +8,10 @@ from owncloud.models.lock import Lock
 
 DEPLOYMENT_QUEUE = "DEPLOYMENT_QUEUE"
 MAIL_QUEUE = "MAIL_QUEUE"
-ROOT_PATH = j.sals.fs.join_paths(j.sals.fs.expanduser("~"), "tf_data")
+ROOT_PATH = j.sals.fs.join_paths(j.sals.fs.expanduser("~"), ".tf_data")
 PLUGIN_DIR = j.sals.fs.join_paths(ROOT_PATH, "tf_plugins")
 STATES_DIR = j.sals.fs.join_paths(ROOT_PATH, "tf_states")
-SOURCE_MODULE_DIR = j.sals.fs.expanduser("~/tf_source_module")
+SOURCE_MODULE_DIR = j.sals.fs.join_paths(ROOT_PATH, "tf_source_module")
 RETRY = 3
 
 tf_lock = Lock()
@@ -54,17 +54,18 @@ class Deployment(BackgroundService):
                     client.state_dir = j.sals.fs.join_paths(STATES_DIR, user_name)
                     client.save()
                     client.copy_source_module()
+                    # if providers mirror takes long time, we could switch from filesystem mirror to plugin cache directory by:
                     # export TF_PLUGIN_CACHE_DIR="$HOME/.terraform.d/plugin-cache"
-                    # the directory must already exist before Terraform will cache plugins
+                    # then skip the provider mirror and run init with use_plugin_dir=false
+                    # note: the directory must already exist before Terraform will cache plugins
                     # The plugin cache directory must not also be one of the configured or implied filesystem mirror directories,
                     # since the cache management logic conflicts with the filesystem mirror logic when operating on the same directory.
-                    # res = client.providers_mirror()
-                    # if not res.is_ok:
-                    #     j.logger.warning(
-                    #         f"providers mirror command failed. reason: {res.last_error}"
-                    #     )
-
-                    res = client.init(upgrade=True, use_plugin_dir=False)
+                    res = client.providers_mirror()
+                    if not res.is_ok:
+                        j.logger.warning(
+                            f"providers mirror command failed. reason: {res.last_error}"
+                        )
+                    res = client.init(upgrade=True, use_plugin_dir=True)
                     if not res.is_ok:
                         j.logger.warning(
                             f"init command failed. reason: {res.last_error}"
