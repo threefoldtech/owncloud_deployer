@@ -34,8 +34,8 @@
       <template v-slot:item.data-table-select="{ item, isSelected, select }">
         <v-simple-checkbox
           :value="isSelected"
-          :readonly="item.status !== 'NEW' || item.status !== 'APPLY_FAILURE'"
-          :disabled="item.status !== 'NEW' || item.status !== 'APPLY_FAILURE'"
+          :readonly="!statusChecker(item.status)"
+          :disabled="!statusChecker(item.status)"
           @input="select($event)"
         ></v-simple-checkbox>
       </template>
@@ -85,16 +85,15 @@ export default {
     };
   },
   methods: {
-    selectAllToggle(props) {
+    selectAllToggle() {
       if (
         this.selected.length !=
         this.requestsWithIndex.length - this.disabledCount
       ) {
         this.selected = [];
-        const self = this;
-        props.requestsWithIndex.forEach((item) => {
-          if (item.status == "NEW" || item.status == "APPLY_FAILURE") {
-            self.selected.push(item);
+        this.requestsWithIndex.forEach((item) => {
+          if (this.statusChecker(item.status)) {
+            this.selected.push(item);
           }
         });
       } else this.selected = [];
@@ -197,6 +196,16 @@ export default {
         this.disabled = true;
       }
     },
+    disabledItems() {
+      this.requestsWithIndex.map((item) => {
+        if (!this.statusChecker(item.status)) this.disabledCount += 1;
+      });
+    },
+    statusChecker(status) {
+      if (status == "NEW" || status == "APPLY_FAILURE") {
+        return true;
+      }
+    },
   },
   computed: {
     requestsWithIndex() {
@@ -204,13 +213,6 @@ export default {
         ...requests,
         index: index + 1,
       }));
-    },
-    disabledItems() {
-      const self = this;
-      this.requests.map((item) => {
-        if (item.status !== "NEW" || item.status !== "APPLY_FAILURE")
-          self.disabledCount += 1;
-      });
     },
   },
   mounted() {
