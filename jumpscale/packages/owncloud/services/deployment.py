@@ -1,3 +1,4 @@
+import os
 from jumpscale.loader import j
 from textwrap import dedent
 from jumpscale.tools.servicemanager.servicemanager import BackgroundService
@@ -11,7 +12,7 @@ MAIL_QUEUE = "MAIL_QUEUE"
 ROOT_PATH = j.sals.fs.join_paths(j.sals.fs.expanduser("~"), ".tf_data")
 PLUGIN_DIR = j.sals.fs.join_paths(ROOT_PATH, "tf_plugins")
 STATES_DIR = j.sals.fs.join_paths(ROOT_PATH, "tf_states")
-SOURCE_MODULE_DIR = j.sals.fs.join_paths(ROOT_PATH, "tf_source_module")
+SOURCE_MODULE_DIR = os.environ.get("TF_SOURCE_MODULE_DIR")
 RETRY = 3
 
 tf_lock = Lock()
