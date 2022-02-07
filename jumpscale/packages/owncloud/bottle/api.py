@@ -72,13 +72,6 @@ def create_user():
 def deploy_instances():
     """get json file for approved users and generate terraform files for them
     """
-    balance = j.tools.http.get("http://localhost:3001/balance").json().get("balance")
-    if float(balance) < 1000:
-        return HTTPResponse(
-        f"Wallet balance is less than 1000 TFT please add more TFTs in the wallet and re-deploy",
-        status=403,
-        headers={"Content-Type": "application/json"},
-    )
     users = j.data.serializers.json.loads(request.body.read())
     
     for username in users:

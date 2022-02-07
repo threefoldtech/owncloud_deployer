@@ -64,13 +64,13 @@ class DestroyExpired(BackgroundService):
                             user.save()
                         j.logger.debug(f"destroy_expired service released tf lock")
                     except Exception as e:
+                        user.status = UserStatus.DESTROY_FAILURE
+                        user.save()
                         j.logger.debug(f"destroy_expired service released tf lock")
                         j.logger.error(
                             f"failed to destroy expired instance for user {user.tname}, error message:\n{e.args}"
                         )
                         j.logger.exception(f"failed to deploy for user {user.tname}", e)
-                        user.status = UserStatus.DESTROY_FAILURE
-                        user.save()
                 else:
                     j.logger.info(f"user {user.tname} is still in trial period, skip")
         j.logger.debug("DestroyExpired service has finished")

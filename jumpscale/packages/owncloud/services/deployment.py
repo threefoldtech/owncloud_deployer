@@ -42,6 +42,12 @@ class Deployment(BackgroundService):
         while True:
             user_info_json = j.core.db.blpop(DEPLOYMENT_QUEUE)[1]
             user_name = j.data.serializers.json.loads(user_info_json)
+            balance = j.tools.http.get("http://localhost:3001/balance").json().get("balance")
+            if float(balance) < 1000:
+                j.core.db.zadd(DEPLOYMENT_QUEUE, user_info_json)
+                j.logger.error(f"Wallet balance is less than 1000 TFT please add more TFTs in the wallet. new deployments will be queued")
+                j.logger.error(f"deployment service will exit now!")
+                return
             try:
                 with tf_lock.lock:
                     j.logger.debug(f"deployment service acquired tf lock")
@@ -113,13 +119,14 @@ class Deployment(BackgroundService):
                 )
                 j.logger.debug(f"deployment service released tf lock")
             except Exception as e:
+                user.status = UserStatus.APPLY_FAILURE
+                user.save()
                 j.logger.debug(f"deployment service released tf lock")
                 j.logger.error(
                     f"failed to deploy for user {user_name}, error message:\n{e.args}"
                 )
                 j.logger.exception(f"failed to deploy for user {user_name}", e)
-                user.status = UserStatus.APPLY_FAILURE
-                user.save()
+
 
 
 def _apply_user_deployment(client, name):
