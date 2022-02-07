@@ -1,5 +1,5 @@
-from .users import UserModel
+from .users import DeploymentModel
 from jumpscale.core.base import StoredFactory
 
-user_model = StoredFactory(UserModel)
-user_model.always_reload = True
+deployment_model = StoredFactory(DeploymentModel)
+deployment_model.always_reload = True

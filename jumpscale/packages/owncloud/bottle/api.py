@@ -3,7 +3,7 @@ import csv
 from jumpscale.loader import j
 from jumpscale.packages.auth.bottle.auth import admin_only, get_user_info, login_required
 from owncloud.models.users import UserStatus
-from owncloud.models import user_model
+from owncloud.models import deployment_model
 
 from bottle import Bottle, request, HTTPResponse, static_file
 
@@ -22,8 +22,8 @@ def list_users():
     """List all users for admin
     """
     users = []
-    for user_name in user_model.list_all():
-        user = user_model.get(user_name)
+    for user_name in deployment_model.list_all():
+        user = deployment_model.get(user_name)
         users.append(user.to_dict())
     return HTTPResponse(
         j.data.serializers.json.dumps(users),
@@ -46,14 +46,14 @@ def create_user():
     if email == "":
         email = user_info.get("email")
 
-    if username in user_model.list_all():
+    if username in deployment_model.list_all():
         return HTTPResponse(
             f"user {username} has already submitted a request. please be patient while we prepare your deployment",
             status=409,
             headers={"Content-Type": "application/json"},
         )
 
-    user = user_model.get(username)
+    user = deployment_model.get(username)
     user.tname = username
     user.email = email
     user.status = UserStatus.NEW
@@ -75,7 +75,7 @@ def deploy_instances():
     users = j.data.serializers.json.loads(request.body.read())
     
     for username in users:
-        user = user_model.get(username)
+        user = deployment_model.get(username)
         if user.status in [UserStatus.APPLY_FAILURE, UserStatus.NEW]:
             user.status = UserStatus.PENDING
             user.save()
@@ -107,8 +107,8 @@ def export():
     """Export saved users as csv 
     """
     users = []
-    for user_name in user_model.list_all():
-        order = user_model.get(user_name)
+    for user_name in deployment_model.list_all():
+        order = deployment_model.get(user_name)
         users.append(order.to_dict())
 
     if not users:

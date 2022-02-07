@@ -33,19 +33,20 @@ locals {
   server_req = "oc_server_req"
   name_req = "oc_name_req"
   network_name = "oc_network_${var.user}_${random_string.random.result}"
-  disk_name = "oc_disk_${var.user}_${random_string.random.result}"
-  vm_name = "oc_vm_${var.user}_${random_string.random.result}"
-  disk_size = 70
+  disk_name = "oc_disk"
+  vm_name = "oc_vm"
+  disk_size = 70 #GB
+  rootfs_size = 2 #GB
   disk_mount_point = "/var/lib/docker"
   vm_cpu = 2
   vm_memory = 8096
-  domain_name = "owncloud${var.user}${random_string.random.result}" # need to be unique
+  domain_name = "owncloud${var.user}${random_string.random.result}"
 }
 resource "grid_scheduler" "sched" {
   requests {
     name = local.server_req
     cru = local.vm_cpu
-    sru = local.disk_size * 1024 # rootfs ?
+    sru = local.disk_size + local.rootfs_size
     mru = local.vm_memory
   }
 
@@ -79,6 +80,7 @@ resource "grid_deployment" "nodes" {
     entrypoint  = "/sbin/zinit init"
     cpu         = local.vm_cpu
     memory      = local.vm_memory
+    rootfs_size  = local.rootfs_size * 1024
     mounts {
       disk_name   = local.disk_name
       mount_point = local.disk_mount_point

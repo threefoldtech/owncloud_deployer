@@ -2,7 +2,7 @@ import os
 from jumpscale.loader import j
 from textwrap import dedent
 from jumpscale.tools.servicemanager.servicemanager import BackgroundService
-from owncloud.models import user_model
+from owncloud.models import deployment_model
 from owncloud.models.users import UserStatus
 
 from owncloud.models.lock import Lock
@@ -48,10 +48,12 @@ class Deployment(BackgroundService):
                 j.logger.error(f"Wallet balance is less than 1000 TFT please add more TFTs in the wallet. new deployments will be queued")
                 j.logger.error(f"deployment service will exit now!")
                 return
+            user = deployment_model.get(user_name)
             try:
                 with tf_lock.lock:
+                    if user.status == UserStatus.DEPLOYED:
+                        continue
                     j.logger.debug(f"deployment service acquired tf lock")
-                    user = user_model.get(user_name)
                     user.status = UserStatus.DEPLOYING
                     user.save()
                     j.logger.info(f"Deploying for user {user_name}")
@@ -82,6 +84,7 @@ class Deployment(BackgroundService):
                         j.logger.critical(
                             f"all retries for deployment for user {user_name} has been failed.\nreason for last try failure: {res.last_error}"
                         )
+                        user.error_message = res.last_error
                         user.status = UserStatus.APPLY_FAILURE
                         user.save()
                         continue
@@ -120,6 +123,7 @@ class Deployment(BackgroundService):
                 j.logger.debug(f"deployment service released tf lock")
             except Exception as e:
                 user.status = UserStatus.APPLY_FAILURE
+                user.error_message = f"failed to deploy for user {user_name}, error message:\n{str(e)}"
                 user.save()
                 j.logger.debug(f"deployment service released tf lock")
                 j.logger.error(
