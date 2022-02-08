@@ -93,3 +93,7 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+volume:
+  size: 1 # GB
+  hostPath: /home/rancher/
