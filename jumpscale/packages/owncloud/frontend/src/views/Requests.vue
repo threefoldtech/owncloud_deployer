@@ -2,11 +2,7 @@
   <div>
     <Navbar />
     <BalanceCard @setBalance="setBalance" />
-    <v-dialog
-      transition="dialog-top-transition"
-      v-model="dialog"
-      max-width="600"
-    >
+    <v-dialog transition="dialog-top-transition" v-model="dialog" width="auto">
       <template>
         <v-card>
           <v-card-text>
