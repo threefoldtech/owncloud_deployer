@@ -27,7 +27,7 @@ class DeploymentModel(Base):
     time = fields.DateTime()
     deployment_timestamp = fields.DateTime()
     expired_timestamp = fields.DateTime()
-    trial_period = fields.Integer(default=20 * 60)
+    trial_period = fields.Integer(default=3 * 30 * 24 * 60 * 60) # 3 months
     error_message = fields.String(default="")
 
     @property
