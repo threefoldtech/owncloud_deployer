@@ -64,7 +64,7 @@ spec:
       volumes:
         - name: data
           persistentVolumeClaim:
-          claimName: "{{ include "owncloud.fullname" . }}-owncloud-claim"
+            claimName: "{{ include "owncloud.fullname" . }}-owncloud-claim"
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
