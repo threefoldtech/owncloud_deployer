@@ -228,8 +228,10 @@ export default {
       }
     },
     handleClick(value) {
-      this.dialog = true;
-      this.message = value.error_message;
+      if (value.error_message) {
+        this.dialog = true;
+        this.message = value.error_message;
+      }
     },
   },
   computed: {
@@ -280,5 +282,14 @@ export default {
 }
 .bg-blue {
   background-color: #041e42 !important;
+}
+pre.bash {
+  background-color: black;
+  color: white;
+  font-size: medium;
+  font-family: Consolas, Monaco, Lucida Console, Liberation Mono,
+    DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
+  width: 100%;
+  display: inline-block;
 }
 </style>
