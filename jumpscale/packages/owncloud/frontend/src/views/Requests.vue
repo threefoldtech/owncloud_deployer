@@ -2,6 +2,22 @@
   <div>
     <Navbar />
     <BalanceCard @setBalance="setBalance" />
+    <v-dialog
+      transition="dialog-top-transition"
+      v-model="dialog"
+      max-width="600"
+    >
+      <template>
+        <v-card>
+          <v-card-text>
+            <div class="text-h5 pa-12">{{ message }}</div>
+          </v-card-text>
+          <v-card-actions class="justify-end">
+            <v-btn text @click="dialog = false">Close</v-btn>
+          </v-card-actions>
+        </v-card>
+      </template>
+    </v-dialog>
     <h4 class="h4 pa-5">Requests:</h4>
     <v-data-table
       class="ma-5 elevation-1"
@@ -14,10 +30,8 @@
       v-model="selected"
       :items-per-page="15"
       @toggle-select-all="selectAllToggle"
+      @click:row="handleClick"
     >
-      <template v-slot:header.data-table-select>
-        <v-simple-checkbox :disabled="balance < 1000"></v-simple-checkbox>
-      </template>
       <template v-slot:item.index="{ item }">{{ item.index }}</template>
       <template v-slot:item.email="{ item }">{{
         item.email == "" ? "-" : item.email
@@ -62,6 +76,8 @@ import Navbar from "@/components/Navbar.vue";
 import BalanceCard from "@/components/BalanceCard.vue";
 import Service from "../services/Services";
 import moment from "moment";
+import AnsiUp from "ansi_up";
+
 export default {
   components: {
     BalanceCard,
@@ -89,6 +105,9 @@ export default {
       disabled: false,
       disabledCount: 0,
       balance: null,
+      ansi: undefined,
+      dialog: false,
+      message: "",
     };
   },
   methods: {
@@ -211,6 +230,10 @@ export default {
         return true;
       }
     },
+    handleClick(value) {
+      this.dialog = true;
+      this.message = this.ansi.ansi_to_html(value.error_message);
+    },
   },
   computed: {
     requestsWithIndex() {
@@ -222,6 +245,7 @@ export default {
   },
   mounted() {
     this.getRequests();
+    this.ansi = new AnsiUp();
   },
 };
 </script>
