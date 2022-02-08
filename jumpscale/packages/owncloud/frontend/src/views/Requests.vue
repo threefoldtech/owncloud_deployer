@@ -16,7 +16,7 @@
       @toggle-select-all="selectAllToggle"
     >
       <template v-slot:header.data-table-select>
-        <v-simple-checkbox v-if="balance > 1000"></v-simple-checkbox>
+        <v-simple-checkbox :disabled="balance < 1000"></v-simple-checkbox>
       </template>
       <template v-slot:item.index="{ item }">{{ item.index }}</template>
       <template v-slot:item.email="{ item }">{{
@@ -36,16 +36,18 @@
       }}</template>
       <template v-slot:item.data-table-select="{ item, isSelected, select }">
         <v-simple-checkbox
-          v-if="balance > 1000"
           :value="isSelected"
-          :readonly="!statusChecker(item.status)"
-          :disabled="!statusChecker(item.status)"
+          :readonly="balance < 1000"
+          :disabled="balance < 1000"
           @input="select($event)"
         ></v-simple-checkbox>
       </template>
     </v-data-table>
     <div class="text-center pt-2 mt-10">
-      <v-btn class="mr-2 bg-blue white--text" @click="deploy(selected)"
+      <v-btn
+        class="mr-2 bg-blue white--text"
+        v-if="balance < 1000"
+        @click="deploy(selected)"
         ><v-icon left> mdi-cloud-upload</v-icon> Deploy</v-btn
       >
       <v-btn class="bg-blue white--text" @click="exportData()"
@@ -115,9 +117,7 @@ export default {
         });
     },
     deploy(list) {
-      if (this.balance < 1000) {
-        alert("New deployments have been disabled because balance < 1000");
-      } else if (list.length == 0) {
+      if (list.length == 0) {
         alert("No items selected");
       } else {
         this.isLoading = true;
