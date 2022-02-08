@@ -37,6 +37,7 @@
       }}</template>
       <template v-slot:item.status="{ item }">
         <td>
+          <v-icon v-if="message" color="red" left> mdi-alert-circle</v-icon>
           <v-chip class="status" :class="item.status">{{ item.status }}</v-chip>
         </td>
       </template>
