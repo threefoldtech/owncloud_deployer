@@ -7,13 +7,13 @@ from owncloud.models.users import UserStatus
 from owncloud.models.lock import Lock
 
 MAIL_QUEUE = "MAIL_QUEUE"
-RETRY = 3
+RETRY = 5
 
 TF_Lock = Lock()
 
 
 class DestroyExpired(BackgroundService):
-    def __init__(self, interval=60 * 5, *args, **kwargs):
+    def __init__(self, interval=3 * 60 * 60, *args, **kwargs):
         """
         DestroyExpired service cleans up expired deployments
         """

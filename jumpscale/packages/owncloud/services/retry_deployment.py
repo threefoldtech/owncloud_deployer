@@ -8,13 +8,13 @@ from owncloud.models.lock import Lock
 
 DEPLOYMENT_QUEUE = "DEPLOYMENT_QUEUE"
 MAIL_QUEUE = "MAIL_QUEUE"
-RETRY = 3
+RETRY = 5
 
 TF_Lock = Lock()
 
 
 class RetryDeployment(BackgroundService):
-    def __init__(self, interval=60 * 5, *args, **kwargs):
+    def __init__(self, interval=60 * 20, *args, **kwargs):
         """
         RetryDeployment service retry failed deployments
         """

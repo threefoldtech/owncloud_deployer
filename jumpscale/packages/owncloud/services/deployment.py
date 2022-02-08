@@ -13,7 +13,7 @@ ROOT_PATH = j.sals.fs.join_paths(j.sals.fs.expanduser("~"), ".tf_data")
 PLUGIN_DIR = j.sals.fs.join_paths(ROOT_PATH, "tf_plugins")
 STATES_DIR = j.sals.fs.join_paths(ROOT_PATH, "tf_states")
 SOURCE_MODULE_DIR = os.environ.get("TF_SOURCE_MODULE_DIR")
-RETRY = 3
+RETRY = 5
 
 tf_lock = Lock()
 
