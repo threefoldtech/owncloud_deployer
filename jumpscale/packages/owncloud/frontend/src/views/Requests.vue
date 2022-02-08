@@ -2,7 +2,7 @@
   <div>
     <Navbar />
     <BalanceCard @setBalance="setBalance" />
-    <v-dialog transition="dialog-top-transition" v-model="dialog" width="auto">
+    <v-dialog transition="dialog-top-transition" v-model="dialog">
       <template>
         <v-card>
           <v-card-text>
@@ -294,8 +294,14 @@ export default {
 .bg-blue {
   background-color: #041e42 !important;
 }
-.card {
-  overflow-x: scroll;
+.v-dialog:not(.v-dialog--fullscreen) {
+  max-height: 75%;
+}
+.v-dialog {
+  max-width: 50%;
+}
+.v-dialog > .v-card > .v-card__text {
+  padding: 0;
 }
 pre {
   background-color: black;
@@ -304,5 +310,8 @@ pre {
   font-family: Consolas, Monaco, Lucida Console, Liberation Mono,
     DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
   display: inline-block;
+  width: 100%;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
 </style>
