@@ -46,7 +46,7 @@
     <div class="text-center pt-2 mt-10">
       <v-btn
         class="mr-2 bg-blue white--text"
-        v-if="balance < 1000"
+        :disabled="balance < 1000"
         @click="deploy(selected)"
         ><v-icon left> mdi-cloud-upload</v-icon> Deploy</v-btn
       >
