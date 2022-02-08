@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# link model to presistent volume
+mkdir -p /data/jsngmodel && ln -s /data/jsngmodel ~/.config/jumpscale
+
 # Edit the default domain with the passed one
 sed -i "s/domain = \"waleed.threefold.io\"/domain = \"$domain\"/g" /owncloud_deployer/jumpscale/packages/owncloud/package.toml 
 

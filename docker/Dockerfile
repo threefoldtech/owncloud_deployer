@@ -43,6 +43,9 @@ ENV TF_IN_AUTOMATION=true
 COPY tf_source_module /root/tf_source_module
 COPY rootfs /
 
+RUN mkdir /data
+VOLUME /data
+
 EXPOSE 8443 8080
 
 CMD ["zinit", "init"]
