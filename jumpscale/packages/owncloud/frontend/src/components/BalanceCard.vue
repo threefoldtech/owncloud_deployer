@@ -31,7 +31,7 @@ export default {
   data() {
     return {
       balance: null,
-      message: "New deployments has been disabled because balance < 1000",
+      message: "New deployments have been disabled because balance < 1000",
     };
   },
   methods: {
