@@ -15,6 +15,9 @@
       :items-per-page="15"
       @toggle-select-all="selectAllToggle"
     >
+      <template v-slot:header.data-table-select>
+        <v-simple-checkbox v-if="balance > 1000"></v-simple-checkbox>
+      </template>
       <template v-slot:item.index="{ item }">{{ item.index }}</template>
       <template v-slot:item.email="{ item }">{{
         item.email == "" ? "-" : item.email
@@ -33,9 +36,10 @@
       }}</template>
       <template v-slot:item.data-table-select="{ item, isSelected, select }">
         <v-simple-checkbox
+          v-if="balance > 1000"
           :value="isSelected"
-          :readonly="!statusChecker(item.status) || balance < 1000"
-          :disabled="!statusChecker(item.status) || balance < 1000"
+          :readonly="!statusChecker(item.status)"
+          :disabled="!statusChecker(item.status)"
           @input="select($event)"
         ></v-simple-checkbox>
       </template>
@@ -111,7 +115,9 @@ export default {
         });
     },
     deploy(list) {
-      if (list.length == 0) {
+      if (this.balance < 1000) {
+        alert("New deployments have been disabled because balance < 1000");
+      } else if (list.length == 0) {
         alert("No items selected");
       } else {
         this.isLoading = true;
