@@ -12,13 +12,13 @@ jumpscale based package for owncloud 3 month fremuim deployment
 
 ## requirements
 
-- python > 3.8
+- python >= 3.6
 - js-sdk
-- npm > 14 && yarn
+- node > 14 && yarn
 
 ### Frontend
 
-- Build go to `jumpscale/packages/owncloud/frontend` and do `yarn && yarn build`
+- Build `make build`
 - Push your changes
 
 ### Docker
@@ -36,6 +36,11 @@ docker run -ti --name owncloud   waleedhammam/owncloud-dep -e domain="waleed.thr
 - `NETWORK`: network to deploy on (default: dev)
 - `ADMINS`: list of system admins that will manage requests
 - `ALERT_EMAIL`: email which will receive wallet alerts
+
+##### terraform and terraform client env
+- `TF_SOURCE_MODULE_DIR`: the configuration directory, will be copied into the target directory before any other initialization steps are run.
+- `TF_PLUGIN_CACHE_DIR`: enable caching. optional.
+- `TF_IN_AUTOMATION`: if set to any non-empty value, Terraform adjusts its output to avoid suggesting specific commands to run next. This can make the output more consistent and less confusing. optional.
 
 ### Helm
 

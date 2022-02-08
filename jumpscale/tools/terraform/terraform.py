@@ -14,7 +14,7 @@ sudo apt-get update && sudo apt-get install terraform
 ```
 
 its recommended to set environment variable TF_IN_AUTOMATION to any non-empty value.
-
+its recommended to set TF_PLUGIN_CACHE_DIR= to exists dir to be used as a cache dir for plugin download.
 also you could set any provider specific input variables in environment variables.
 
 ## Usage
@@ -43,9 +43,10 @@ also you could set any provider specific input variables in environment variable
 >>> tf.copy_source_module()
 # terraform providers mirror, populate the PLUGIN_DIR with the required terraform plugins
 >>> res = tf.providers_mirror()
-(0, '- Mirroring threefoldtech/grid...\n  - Selected v0.1.23 with no constraints\n  - Downloading package for linux_amd64...\n  - Package authenticated: self-signed\n- Mirroring hashicorp/random...\n  - Selected v3.1.0 with no constraints\n  - Downloading package for linux_amd64...\n  - Package authenticated: signed by HashiCorp\n')
+>>> res.is_ok
+True
 
-# terraform init 
+# terraform init, we will use the previously downloaded plugins from last step 
 >>> res = tf.init(use_plugin_dir=True)
 >>> res.is_ok
 True
@@ -69,7 +70,7 @@ True
 >>> res = tf.apply(vars={'user': 'samehabouelsaad'})
 >>> res.is_ok
 False
-res.errors                                                                                                                                                                                          
+res.errors
 ["Error: didn't find a suitable node"]
 
 >>> tf.status
@@ -100,7 +101,7 @@ True
 
 # terraform show
 >>> res = tf.show()
->>> res.is_o
+>>> res.is_ok
 True
 >>> res.json
 {'format_version': '1.0', 'terraform_version': '1.1.4', 'values': {'outputs': {'admin_passwords': {'sensitive': True, 'value': 'Par12}V3'}, 'fqdn': {'sensitive': False, 'value': 'owncloudsamehabouelsaad.gent01.dev.grid.tf'}, 'nodes_ip': {'sensitive': False, 'value': '10.1.3.2'}, 'nodes_ygg_ip': {'sensitive': False, 'value': '301:a9bd:9b77:ce71:399e:1bab:7483:12c3'}}, 'root_module': {'resources': [{'address': 'data.grid_gateway_domain.domain', 'mode': 'data', 'type': 'grid_gateway_domain', 'name': 'domain', 'provider_name': 'registry.terraform.io/threefoldtech/grid', 'schema_version': 0, 'values': {'fqdn': 'owncloudsamehabouelsaad.gent01.dev.grid.tf', 'id': '1643756147', 'name': 'owncloudsamehabouelsaad', 'node': 7}, 'sensitive_values': {}}, {'address': 'grid_deployment.nodes', 'mode': 'managed', 'type': 'grid_deployment', 'name': 'nodes', 'provider_name': 'registry.terraform.io/threefoldtech/grid', 'schema_version': 0, 'values': {'disks': [{'description': 'volume holding docker data', 'name': 'data_samehabouelsaad', 'size': 70}], 'id': '6799', 'ip_range': '10.1.3.0/24', 'network_name': 'network_samehabouelsaad', 'node': 17, 'qsfs': [], 'vms': [{'computedip': '', 'computedip6': '', 'cpu': 4, 'description': '', 'entrypoint': '/sbin/zinit init', 'env_vars': {'OWNCLOUD_ADMIN_PASSWORD': 'Par12}V3', 'OWNCLOUD_ADMIN_USERNAME': 'admin', 'OWNCLOUD_DOMAIN': 'owncloudsamehabouelsaad.gent01.dev.grid.tf', 'OWNCLOUD_MAIL_DOMAIN': 'owncloudsamehabouelsaad.gent01.dev.grid.tf', 'OWNCLOUD_MAIL_FROM_ADDRESS': 'owncloud', 'OWNCLOUD_MAIL_SMTP_HOST': '', 'OWNCLOUD_MAIL_SMTP_NAME': '', 'OWNCLOUD_MAIL_SMTP_PASSWORD': '', 'OWNCLOUD_MAIL_SMTP_PORT': '', 'OWNCLOUD_MAIL_SMTP_SECURE': 'none', 'SSH_KEY': 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC9MI7fh4xEOOEKL7PvLvXmSeRWesToj6E26bbDASvlZnyzlSKFLuYRpnVjkr8JcuWKZP6RQn8+2aRs6Owyx7Tx+9kmEh7WI5fol0JNDn1D0gjp4XtGnqnON7d0d5oFI+EjQQwgCZwvg0PnV/2DYoH4GJ6KPCclPz4a6eXrblCLA2CHTzghDgyj2x5B4vB3rtoI/GAYYNqxB7REngOG6hct8vdtSndeY1sxuRoBnophf7MPHklRQ6EG2GxQVzAOsBgGHWSJPsXQkxbs8am0C9uEDL+BJuSyFbc/fSRKptU1UmS18kdEjRgGNoQD7D+Maxh1EbmudYqKW92TVgdxXWTQv1b1+3dG5+9g+hIWkbKZCBcfMe4nA5H7qerLvoFWLl6dKhayt1xx5mv8XhXCpEC22/XHxhRBHBaWwSSI+QPOCvs4cdrn4sQU+EXsy7+T7FIXPeWiC2jhFd6j8WIHAv6/rRPsiwV1dobzZOrCxTOnrqPB+756t7ANxuktsVlAZaM= sameh@sameh-inspiron-3576'}, 'flist': 'https://hub.grid.tf/samehabouelsaad.3bot/abouelsaad-owncloud-10.9.1.flist', 'flist_checksum': '', 'ip': '10.1.3.2', 'memory': 4096, 'mounts': [{'disk_name': 'data_samehabouelsaad', 'mount_point': '/var/lib/docker'}], 'name': 'owncloud_samehabouelsaad', 'planetary': True, 'publicip': False, 'publicip6': False, 'rootfs_size': 0, 'ygg_ip': '301:a9bd:9b77:ce71:399e:1bab:7483:12c3'}], 'zdbs': []}, 'sensitive_values': {'disks': [{}], 'qsfs': [], 'vms': [{'env_vars': {'OWNCLOUD_ADMIN_PASSWORD': True}, 'mounts': [{}]}], 'zdbs': []}, 'depends_on': ['data.grid_gateway_domain.domain', 'grid_network.ownnet', 'grid_scheduler.sched', 'random_password.password']}, {'address': 'grid_name_proxy.p1', 'mode': 'managed', 'type': 'grid_name_proxy', 'name': 'p1', 'provider_name': 'registry.terraform.io/threefoldtech/grid', 'schema_version': 0, 'values': {'backends': ['http://301:a9bd:9b77:ce71:399e:1bab:7483:12c3:80'], 'description': None, 'fqdn': 'owncloudsamehabouelsaad.gent01.dev.grid.tf', 'id': '7aaebb59-1710-419c-b166-88c8e1820815', 'name': 'owncloudsamehabouelsaad', 'name_contract_id': 6800, 'node': 7, 'node_deployment_id': {'7': 6801}, 'tls_passthrough': False}, 'sensitive_values': {'backends': [False], 'node_deployment_id': {}}, 'depends_on': ['data.grid_gateway_domain.domain', 'grid_deployment.nodes', 'grid_network.ownnet', 'grid_scheduler.sched', 'random_password.password']}, {'address': 'grid_network.ownnet', 'mode': 'managed', 'type': 'grid_network', 'name': 'ownnet', 'provider_name': 'registry.terraform.io/threefoldtech/grid', 'schema_version': 0, 'values': {'access_wg_config': '\n[Interface]\nAddress = 100.64.1.2\nPrivateKey = 6PaE0fIZEtiFbTOVpYp4aJ4EoUciPOTs7fjronC82HM=\n[Peer]\nPublicKey = uRyYR2PID/Qtdg8rQYBWanUQofiZISI19buSyP9PfHY=\nAllowedIPs = 10.1.0.0/16, 100.64.0.0/16\nPersistentKeepalive = 25\nEndpoint = 185.206.122.32:4746\n\t', 'add_wg_access': True, 'description': 'server network', 'external_ip': '10.1.2.0/24', 'external_sk': '6PaE0fIZEtiFbTOVpYp4aJ4EoUciPOTs7fjronC82HM=', 'id': 'e76eb098-7de7-4dab-958e-1fd55ee74d25', 'ip_range': '10.1.0.0/16', 'name': 'network_samehabouelsaad', 'node_deployment_id': {'17': 6797, '8': 6798}, 'nodes': [17], 'nodes_ip_range': {'17': '10.1.3.0/24', '8': '10.1.4.0/24'}, 'public_node_id': 8}, 'sensitive_values': {'node_deployment_id': {}, 'nodes': [False], 'nodes_ip_range': {}}, 'depends_on': ['grid_scheduler.sched']}, {'address': 'grid_scheduler.sched', 'mode': 'managed', 'type': 'grid_scheduler', 'name': 'sched', 'provider_name': 'registry.terraform.io/threefoldtech/grid', 'schema_version': 0, 'values': {'id': '1643755862', 'nodes': {'name_samehabouelsaad': 7, 'server_samehabouelsaad': 17}, 'requests': [{'certified': False, 'cru': 2, 'domain': False, 'farm': '', 'hru': 0, 'ipv4': False, 'mru': 8096, 'name': 'server_samehabouelsaad', 'sru': 151200}, {'certified': False, 'cru': 0, 'domain': True, 'farm': '', 'hru': 0, 'ipv4': False, 'mru': 0, 'name': 'name_samehabouelsaad', 'sru': 0}]}, 'sensitive_values': {'nodes': {}, 'requests': [{}, {}]}}, {'address': 'random_password.password', 'mode': 'managed', 'type': 'random_password', 'name': 'password', 'provider_name': 'registry.terraform.io/hashicorp/random', 'schema_version': 0, 'values': {'id': 'none', 'keepers': None, 'length': 8, 'lower': True, 'min_lower': 0, 'min_numeric': 0, 'min_special': 0, 'min_upper': 0, 'number': True, 'override_special': None, 'result': 'Par12}V3', 'special': True, 'upper': True}, 'sensitive_values': {}}, {'address': 'random_string.random', 'mode': 'managed', 'type': 'random_string', 'name': 'random', 'provider_name': 'registry.terraform.io/hashicorp/random', 'schema_version': 1, 'values': {'id': '1f902u', 'keepers': None, 'length': 6, 'lower': True, 'min_lower': 0, 'min_numeric': 0, 'min_special': 0, 'min_upper': 0, 'number': True, 'override_special': None, 'result': '1f902u', 'special': False, 'upper': False}, 'sensitive_values': {}}]}}}
@@ -118,6 +119,10 @@ res.destroy_summary
 # terraform destroy
 >>> tf.is_destroyed
 True
+
+# delete state dir, works if no resources exists in the state
+>>> tf._clean_state_dir()
+True
 ```
 
 """
@@ -132,8 +137,8 @@ from jumpscale.loader import j
 from enum import Enum, auto
 
 TF_BINARY = "terraform"
-# althought it is not the client responsibility to provide this paths,
-# it provides a default values for plugin_dir, and state_dir that user can override
+# although it is not the client responsibility to provide this paths,
+# it provides a default values for plugin_dir, and state_dir that user can override.
 ROOT_PATH = os.path.join(os.path.expanduser("~"), "tf_data")
 PLUGIN_DIR = os.path.join(ROOT_PATH, "tf_plugins")
 STATES_DIR = os.path.join(ROOT_PATH, "tf_states")
@@ -284,9 +289,9 @@ class TFResult:
     @property
     def changes_present(self):
         """Return True if the command plan/apply/destroy contains changes for remote state, False otherwise."""
-        if plan := self.plan_summary:
+        if self.plan_summary:
             return (
-                plan.get("add") > 0 or plan.get("change") > 0 or plan.get("remove") > 0
+                self.plan_summary.get("add") > 0 or self.plan_summary.get("change") > 0 or self.plan_summary.get("remove") > 0
             )
         return False
 
@@ -556,7 +561,10 @@ class Terraform(Base):
                 f"the planned changes for the deployment instance '{self.instance_name}' were failed to apply."
             )
         self.save()
-        return TFResult(rc=proc.returncode, json_messages=messages)
+        result = TFResult(rc=proc.returncode, json_messages=messages)
+        if proc.stderr:
+            result.text = proc.stderr.decode()
+        return result
 
     def destroy(self, vars=None):
         """Destroy the terraform managed infrastructure. set the instance status to DESTROYED or FAILED_TO_DESTROY.
