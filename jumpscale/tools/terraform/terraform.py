@@ -143,7 +143,7 @@ ROOT_PATH = os.path.join(os.path.expanduser("~"), "tf_data")
 PLUGIN_DIR = os.path.join(ROOT_PATH, "tf_plugins")
 STATES_DIR = os.path.join(ROOT_PATH, "tf_states")
 
-SHOW_TF_COMMAND_OUTPUT = True  # os.environ.get("TF_CLIENT_DEBUG", False) == "True"
+SHOW_TF_COMMAND_OUTPUT = os.environ.get("TF_CLIENT_DEBUG", False) == "True"
 
 _GLOBAL_ARGS = {
     "chdir": "-chdir={0}",
@@ -288,7 +288,7 @@ class TFResult:
 
     @property
     def changes_present(self):
-        """Return True if the command plan/apply/destroy contains changes for remote state, False otherwise."""
+        """Return True if the command plan contains changes for remote state, False otherwise."""
         if self.plan_summary:
             return (
                 self.plan_summary.get("add") > 0 or self.plan_summary.get("change") > 0 or self.plan_summary.get("remove") > 0
