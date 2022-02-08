@@ -103,6 +103,8 @@ export default {
       disabled: false,
       disabledCount: 0,
       balance: null,
+      dialog: false,
+      message: "",
     };
   },
   methods: {
