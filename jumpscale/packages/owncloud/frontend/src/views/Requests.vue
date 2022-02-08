@@ -10,7 +10,9 @@
       <template>
         <v-card>
           <v-card-text>
-            <div class="text-h5 pa-12">{{ message }}</div>
+            <div class="text-h5 pa-6">
+              <pre><code v-html="message"></code></pre>
+            </div>
           </v-card-text>
           <v-card-actions class="justify-end">
             <v-btn text @click="dialog = false">Close</v-btn>
@@ -18,6 +20,7 @@
         </v-card>
       </template>
     </v-dialog>
+
     <h4 class="h4 pa-5">Requests:</h4>
     <v-data-table
       class="ma-5 elevation-1"
@@ -51,17 +54,14 @@
       <template v-slot:item.data-table-select="{ item, isSelected, select }">
         <v-simple-checkbox
           :value="isSelected"
-          :readonly="balance < 1000"
-          :disabled="balance < 1000"
+          :readonly="!statusChecker(item.status) || balance < 1000"
+          :disabled="!statusChecker(item.status) || balance < 1000"
           @input="select($event)"
         ></v-simple-checkbox>
       </template>
     </v-data-table>
     <div class="text-center pt-2 mt-10">
-      <v-btn
-        class="mr-2 bg-blue white--text"
-        :disabled="balance < 1000"
-        @click="deploy(selected)"
+      <v-btn class="mr-2 bg-blue white--text" @click="deploy(selected)"
         ><v-icon left> mdi-cloud-upload</v-icon> Deploy</v-btn
       >
       <v-btn class="bg-blue white--text" @click="exportData()"
@@ -76,8 +76,6 @@ import Navbar from "@/components/Navbar.vue";
 import BalanceCard from "@/components/BalanceCard.vue";
 import Service from "../services/Services";
 import moment from "moment";
-import AnsiUp from "ansi_up";
-
 export default {
   components: {
     BalanceCard,
@@ -105,9 +103,6 @@ export default {
       disabled: false,
       disabledCount: 0,
       balance: null,
-      ansi: undefined,
-      dialog: false,
-      message: "",
     };
   },
   methods: {
@@ -232,7 +227,7 @@ export default {
     },
     handleClick(value) {
       this.dialog = true;
-      this.message = this.ansi.ansi_to_html(value.error_message);
+      this.message = value.error_message;
     },
   },
   computed: {
@@ -245,7 +240,6 @@ export default {
   },
   mounted() {
     this.getRequests();
-    this.ansi = new AnsiUp();
   },
 };
 </script>
