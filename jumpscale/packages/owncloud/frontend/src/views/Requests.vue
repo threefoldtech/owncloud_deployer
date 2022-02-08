@@ -130,6 +130,19 @@ export default {
         })
         .catch((error) => {
           console.log("Error! Could not reach the API. " + error);
+        })
+        .finally(() => {
+          if (
+            this.requests.some(
+              (item) =>
+                item.status !== "DEPLOYED" &&
+                item.status !== "APPLY_FAILURE" &&
+                item.status !== "EXPIRED" &&
+                item.status !== "NEW"
+            )
+          ) {
+            this.getRequests();
+          }
         });
     },
     deploy(list) {
@@ -283,7 +296,7 @@ export default {
 .bg-blue {
   background-color: #041e42 !important;
 }
-pre.bash {
+pre {
   background-color: black;
   color: white;
   font-size: medium;
