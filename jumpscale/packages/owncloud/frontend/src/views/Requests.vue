@@ -10,7 +10,7 @@
       <template>
         <v-card>
           <v-card-text>
-            <div class="text-h5 pa-6">
+            <div class="text-h5 pa-6 card">
               <pre><code v-html="message"></code></pre>
             </div>
           </v-card-text>
@@ -141,7 +141,9 @@ export default {
                 item.status !== "NEW"
             )
           ) {
-            this.getRequests();
+            setInterval(() => {
+              this.getRequests();
+            }, 10000);
           }
         });
     },
@@ -296,13 +298,15 @@ export default {
 .bg-blue {
   background-color: #041e42 !important;
 }
+.card {
+  overflow-x: scroll;
+}
 pre {
   background-color: black;
   color: white;
   font-size: medium;
   font-family: Consolas, Monaco, Lucida Console, Liberation Mono,
     DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
-  width: 100%;
   display: inline-block;
 }
 </style>
