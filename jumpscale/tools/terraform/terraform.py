@@ -143,7 +143,7 @@ ROOT_PATH = os.path.join(os.path.expanduser("~"), "tf_data")
 PLUGIN_DIR = os.path.join(ROOT_PATH, "tf_plugins")
 STATES_DIR = os.path.join(ROOT_PATH, "tf_states")
 
-SHOW_TF_COMMAND_OUTPUT = os.environ.get("TF_CLIENT_DEBUG", False) == "True"
+SHOW_TF_COMMAND_OUTPUT = os.environ.get("TF_CLIENT_DEBUG", False) == "true"
 
 _GLOBAL_ARGS = {
     "chdir": "-chdir={0}",
@@ -234,7 +234,7 @@ class TFResult:
             >>> res.prase_messages(type="change_summary", key="changes")
             [{'add': 0, 'change': 0, 'remove': 0, 'operation': 'plan'}]
         """
-        if not self.json:
+        if not self.json or not isinstance(self.json, list):
             return []
         filtered_messages = [
             message
@@ -460,10 +460,11 @@ class Terraform(Base):
         """copy the configuration files from instance source_module to instance state dir.
 
         Raises:
+            ValueError: if the source_module is not set.
             FileNotFoundError: if the source_module is not set or exists.
         """
         if not self.source_module:
-            raise FileNotFoundError("source_module is not set")
+            raise ValueError("source_module is not set")
         if not os.path.exists(self.source_module):
             raise FileNotFoundError(
                 f"the source directory '{self.source_module}' does not exist."
