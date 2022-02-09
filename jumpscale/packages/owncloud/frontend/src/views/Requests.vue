@@ -38,7 +38,9 @@
       <template v-slot:item.status="{ item }">
         <td>
           <v-icon
-            v-if="item.status == 'APPLY_FAILURE' || status == 'DESTROY_FAILURE'"
+            v-if="
+              item.status == 'APPLY_FAILURE' || item.status == 'DESTROY_FAILURE'
+            "
             color="red"
             left
           >
