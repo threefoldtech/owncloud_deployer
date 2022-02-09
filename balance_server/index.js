@@ -9,14 +9,17 @@ const mnemonic = process.env.MNEMONICS
 const scheme = "sr25519"
 const client = new Client(url, mnemonic, scheme)
 
-
-async function getBalance() {
-    let balance = 0
+function initClient(client) {
     try {
-        await client.init()
+        client.init()
     } catch (err) {
         return err
     }
+}
+
+async function getBalance() {
+    let balance = 0
+    
     try {
         balance = await client.getBalance()
     } catch (err) {
@@ -31,6 +34,7 @@ app.get('/balance', async (req, res) => {
 })
 
 app.listen(port, () => {
+    initClient(client);
     console.log(`balance server app listening on port: ${port}`)
 })
 
