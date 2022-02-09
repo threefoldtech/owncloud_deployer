@@ -32,6 +32,7 @@ export default {
     return {
       balance: null,
       message: "New deployments have been disabled because balance < 1000",
+      timer: "",
     };
   },
   methods: {
@@ -45,9 +46,17 @@ export default {
           console.log("Error! Could not reach the API. " + error);
         });
     },
+    cancelAutoUpdate () {
+            clearInterval(this.timer);
+            this.timer = "";
+    },
   },
-  mounted() {
+  created() {
     this.getBalance();
+    this.timer = setInterval(this.getRequests, 10000);
+  },
+  destroyed() {
+    this.cancelAutoUpdate();
   },
 };
 </script>
