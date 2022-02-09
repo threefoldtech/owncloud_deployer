@@ -8,7 +8,7 @@ image:
   repository: waleedhammam/owncloud-deployer
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "1.0.0-rc1"
+  tag: "1.0.0-rc2"
 
   env:          
     - name: "email_host"
