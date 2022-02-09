@@ -110,6 +110,7 @@ export default {
       balance: null,
       dialog: false,
       message: "",
+      timer: "",
     };
   },
   methods: {
@@ -136,21 +137,6 @@ export default {
         .catch((error) => {
           console.log("Error! Could not reach the API. " + error);
         })
-        .finally(() => {
-          if (
-            this.requests.some(
-              (item) =>
-                item.status !== "DEPLOYED" &&
-                item.status !== "APPLY_FAILURE" &&
-                item.status !== "EXPIRED" &&
-                item.status !== "NEW"
-            )
-          ) {
-            setInterval(() => {
-              this.getRequests();
-            }, 10000);
-          }
-        });
     },
     deploy(list) {
       if (list.length == 0) {
@@ -253,6 +239,10 @@ export default {
         this.message = value.error_message;
       }
     },
+    cancelAutoUpdate () {
+            clearInterval(this.timer);
+            this.timer = "";
+    }
   },
   computed: {
     requestsWithIndex() {
@@ -262,8 +252,12 @@ export default {
       }));
     },
   },
-  mounted() {
+  created() {
     this.getRequests();
+    this.timer = setInterval(this.getRequests, 10000);
+  },
+  destroyed() {
+    this.cancelAutoUpdate();
   },
 };
 </script>
