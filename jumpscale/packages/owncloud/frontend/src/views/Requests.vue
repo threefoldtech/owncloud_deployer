@@ -37,16 +37,16 @@
       }}</template>
       <template v-slot:item.status="{ item }">
         <td>
+          <v-chip class="status" :class="item.status">{{ item.status }}</v-chip>
           <v-icon
             v-if="
               item.status == 'APPLY_FAILURE' || item.status == 'DESTROY_FAILURE'
             "
             color="red"
-            left
+            right
           >
             mdi-information-outline</v-icon
           >
-          <v-chip class="status" :class="item.status">{{ item.status }}</v-chip>
         </td>
       </template>
       <template v-slot:item.rtime="{ item }">{{ time(item.time) }}</template>
