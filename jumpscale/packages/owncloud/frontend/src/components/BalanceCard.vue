@@ -53,7 +53,7 @@ export default {
   },
   created() {
     this.getBalance();
-    this.timer = setInterval(this.getRequests, 10000);
+    this.timer = setInterval(this.getBalance, 10000);
   },
   destroyed() {
     this.cancelAutoUpdate();
