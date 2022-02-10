@@ -86,7 +86,7 @@ resource "grid_deployment" "nodes" {
       mount_point = local.disk_mount_point
     }
     env_vars = {
-      SSH_KEY     = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC9MI7fh4xEOOEKL7PvLvXmSeRWesToj6E26bbDASvlZnyzlSKFLuYRpnVjkr8JcuWKZP6RQn8+2aRs6Owyx7Tx+9kmEh7WI5fol0JNDn1D0gjp4XtGnqnON7d0d5oFI+EjQQwgCZwvg0PnV/2DYoH4GJ6KPCclPz4a6eXrblCLA2CHTzghDgyj2x5B4vB3rtoI/GAYYNqxB7REngOG6hct8vdtSndeY1sxuRoBnophf7MPHklRQ6EG2GxQVzAOsBgGHWSJPsXQkxbs8am0C9uEDL+BJuSyFbc/fSRKptU1UmS18kdEjRgGNoQD7D+Maxh1EbmudYqKW92TVgdxXWTQv1b1+3dG5+9g+hIWkbKZCBcfMe4nA5H7qerLvoFWLl6dKhayt1xx5mv8XhXCpEC22/XHxhRBHBaWwSSI+QPOCvs4cdrn4sQU+EXsy7+T7FIXPeWiC2jhFd6j8WIHAv6/rRPsiwV1dobzZOrCxTOnrqPB+756t7ANxuktsVlAZaM= sameh@sameh-inspiron-3576",
+      SSH_KEY     = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDSkhNAIP22RH/sQx7alFS6vcqw1OAQUkC5MLv6t3L78YVTRv+/owSqIqCQHr2+zfb3aJijsxj9nqg54rVkEiCXOkT6IE/MGWSP6O/x/cCG8J7AT+OCCjo9IB/+V3CA8yREHi7ggqPv6hEfNoa1AMbnxqxT7a+5sJUVd14/Ib9OQKWBCXzosa0SjTY/RO1SrL93E80N+SJQRBCMemzlepn4wLDWvqs7DiruY+g9E2CskhDijt4iJCuNFZzAcTS3UeqxOG2QfLK2zc8M9/AycMcEyHn94Lml6V75Lk09iLB9QGTGsa4oAD3GFLce4VoKKZx0e6lwwnMNoAHKhBEMFmO5 root@waleed-ng",
       OWNCLOUD_DOMAIN = data.grid_gateway_domain.domain.fqdn,
       OWNCLOUD_ADMIN_USERNAME = local.admin_name,
       OWNCLOUD_ADMIN_PASSWORD = local.password,
