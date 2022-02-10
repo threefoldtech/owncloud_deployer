@@ -504,7 +504,8 @@ class Terraform(Base):
             from_module (bool, optional): copy the configuration files (natively using terraform init command) from instance source_module to instance state dir. Defaults to False.
 
         Returns:
-            int: command exit code
+            TFResult: result object of the operation.
+
         """
         cmd = ["init"]
         if upgrade:
