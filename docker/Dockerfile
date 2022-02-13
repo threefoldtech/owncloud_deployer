@@ -27,6 +27,10 @@ RUN wget https://github.com/threefoldtech/zinit/releases/download/v0.1/zinit -O 
 RUN git clone https://github.com/threefoldtech/owncloud_deployer.git
 
 WORKDIR owncloud_deployer
+
+RUN cd jumpscale/packages/owncloud/frontend/ && \
+    yarn && yarn build
+
 RUN chmod +x ./docker/init.sh
 RUN cd balance_server && \
     yarn
