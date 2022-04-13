@@ -21,7 +21,7 @@ RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - &&\
     npm install -g npm@latest && \
     npm install --global yarn
 
-RUN wget https://github.com/threefoldtech/zinit/releases/download/v0.1/zinit -O /sbin/zinit \
+RUN wget https://github.com/threefoldtech/zinit/releases/download/v0.2.6/zinit -O /sbin/zinit \
     && chmod +x /sbin/zinit
     
 RUN git clone https://github.com/threefoldtech/owncloud_deployer.git
