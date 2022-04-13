@@ -26,6 +26,11 @@ RUN wget https://github.com/threefoldtech/zinit/releases/download/v0.1/zinit -O 
     
 RUN git clone https://github.com/threefoldtech/owncloud_deployer.git
 
+RUN apt-get update && apt-get install -y gnupg software-properties-common curl &&\
+    curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add - &&\
+    apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main" &&\
+    apt-get update && apt-get install terraform
+
 WORKDIR owncloud_deployer
 
 RUN cd jumpscale/packages/owncloud/frontend/ && \
@@ -50,6 +55,6 @@ COPY rootfs /
 RUN mkdir /data
 VOLUME /data
 
-EXPOSE 8443 8080
+EXPOSE 8443 80
 
 CMD ["zinit", "init"]
