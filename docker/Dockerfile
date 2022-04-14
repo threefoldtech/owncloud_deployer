@@ -37,8 +37,7 @@ RUN cd jumpscale/packages/owncloud/frontend/ && \
 RUN cd balance_server && \
     yarn
 
-RUN poetry config virtualenvs.create false && pip install --upgrade pip setuptools wheel && poetry install --no-dev
-RUN poetry shell
+RUN pip install --upgrade pip setuptools wheel && poetry install --no-dev
 
 # terrafrom env variables
 ENV TF_SOURCE_MODULE_DIR="/root/tf_source_module"
