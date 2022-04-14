@@ -11,9 +11,7 @@ RUN apt-get update && apt-get install -y git curl wget \
                 tmux \
                 nginx \
                 build-essential \
-    && curl -sSL https://install.python-poetry.org | python3 -
-
-ENV PATH="/root/.local/bin:$PATH"
+    && pip3 install poetry
 
 RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - &&\
     apt-get install -y nodejs &&\
@@ -40,6 +38,7 @@ RUN cd balance_server && \
     yarn
 
 RUN poetry config virtualenvs.create false && pip install --upgrade pip setuptools wheel && poetry install --no-dev
+RUN poetry shell
 
 # terrafrom env variables
 ENV TF_SOURCE_MODULE_DIR="/root/tf_source_module"
