@@ -37,8 +37,8 @@ RUN cd jumpscale/packages/owncloud/frontend/ && \
 RUN cd balance_server && \
     yarn
 
-RUN pip install --upgrade pip setuptools wheel && poetry install --no-dev
-
+RUN poetry install --no-dev
+RUN source `poetry env info --path`/bin/activate
 # terrafrom env variables
 ENV TF_SOURCE_MODULE_DIR="/root/tf_source_module"
 ENV TF_PLUGIN_CACHE_DIR="/root/.terraform.d/plugin-cache"
