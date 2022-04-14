@@ -13,3 +13,6 @@ js-sdk = "^11.5b13"
 jinja2 = "=2.11.2"
 markupsafe = "=1.1.1"
 
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
