@@ -4,57 +4,55 @@ LABEL maintainer="hammamw@incubaid.com"
 
 ARG DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update && \
-    apt-get upgrade -y
-
-RUN apt-get install -y git curl wget \
+RUN apt-get update && apt-get install -y git curl wget \
                 python3-venv \
                 python3-pip \
                 redis-server \
                 tmux \
                 nginx \
                 build-essential \
-    && pip3 install poetry
+    && curl -sSL https://install.python-poetry.org | python3 -
+
+ENV PATH="/root/.local/bin:$PATH"
 
 RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - &&\
     apt-get install -y nodejs &&\
     npm install -g npm@latest && \
     npm install --global yarn
 
-RUN wget https://github.com/threefoldtech/zinit/releases/download/v0.2.6/zinit -O /sbin/zinit \
+RUN wget https://github.com/threefoldtech/zinit/releases/download/v0.1/zinit -O /sbin/zinit \
     && chmod +x /sbin/zinit
-    
-RUN git clone https://github.com/threefoldtech/owncloud_deployer.git
 
 RUN apt-get update && apt-get install -y gnupg software-properties-common curl &&\
     curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add - &&\
     apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main" &&\
-    apt-get update && apt-get install terraform
+    apt-get update && apt-get install -y terraform
 
-WORKDIR owncloud_deployer
+RUN git clone https://github.com/threefoldtech/owncloud_deployer.git
+
+WORKDIR /owncloud_deployer
+RUN chmod +x ./docker/init.sh
 
 RUN cd jumpscale/packages/owncloud/frontend/ && \
     yarn && yarn build
 
-RUN chmod +x ./docker/init.sh
 RUN cd balance_server && \
     yarn
 
-RUN poetry config virtualenvs.create false &&  poetry install --no-dev
-RUN poetry shell
+RUN poetry config virtualenvs.create false && pip install --upgrade pip setuptools wheel && poetry install --no-dev
 
 # terrafrom env variables
 ENV TF_SOURCE_MODULE_DIR="/root/tf_source_module"
-RUN mkdir -p /root/.terraform.d/plugin-cache
 ENV TF_PLUGIN_CACHE_DIR="/root/.terraform.d/plugin-cache"
 ENV TF_IN_AUTOMATION=true
 
+RUN mkdir -p /root/.terraform.d/plugin-cache
 COPY tf_source_module /root/tf_source_module
 COPY rootfs /
 
 RUN mkdir /data
 VOLUME /data
 
-EXPOSE 8443 80
+EXPOSE 443 80
 
 CMD ["zinit", "init"]
