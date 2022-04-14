@@ -1,4 +1,6 @@
 #!/bin/bash
+
+cd /owncloud_deployer
 # prepare random tname and email
 rand_id=$(cat /dev/urandom | tr -dc 'a-z' | fold -w 10 | head -n 1)
 dummy_tname=$rand_id".3bot"
