@@ -46,12 +46,13 @@ docker run -ti --name owncloud -e domain="<domain_name>" -e email_host="<mail_se
 - `TF_SOURCE_MODULE_DIR`: the configuration directory, will be copied into the target directory before any other initialization steps are run.
 - `TF_PLUGIN_CACHE_DIR`: enable caching. optional.
 - `TF_IN_AUTOMATION`: if set to any non-empty value, Terraform adjusts its output to avoid suggesting specific commands to run next. This can make the output more consistent and less confusing. optional.
+- `SUPPORT_PUBLIC_SSH_KEY`: public ssh key to be added to Owncloud instances's  ~/.ssh/authorized_keys.
 
 ### Helm
 
 Refer to helm docs in [helmcharts/owncloud/README.md](helmcharts/owncloud/README.md)
 
-#### local running
+### local running
 
 1- Export previous variables
 2- Configure mail client
@@ -71,7 +72,7 @@ Refer to helm docs in [helmcharts/owncloud/README.md](helmcharts/owncloud/README
 
 - `/#/requests`: in this page dev-ops can approve requests to start deployment and check the statuses
 
-#### Endpoints
+#### API Endpoints
 
 ##### `/owncloud/api/requests` [GET] (admin only)
 
