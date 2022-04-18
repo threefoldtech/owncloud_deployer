@@ -40,7 +40,7 @@ for var in RESTIC_REPOSITORY RESTIC_PASSWORD AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS
     done
 
 if [ $disable_backup == 0 ]; then
-    jsng "restic_repo = j.tools.restic.new(\"restic_owncloud\", repo=\"$RESTIC_REPOSITORY\", password=\"$RESTIC_PASSWORD\", extra_env={\"AWS_ACCESS_KEY_ID\": \"$AWS_ACCESS_KEY_ID\", \"AWS_SECRET_ACCESS_KEY\": \"$AWS_SECRET_ACCESS_KEY\"}); restic_repo.init_repo(); restic_repo.save()"
+    jsng "restic_repo = j.tools.restic.new(\"restic_owncloud\", repo=\"$RESTIC_REPOSITORY\", password=\"$RESTIC_PASSWORD\", extra_env={\"AWS_ACCESS_KEY_ID\": \"$AWS_ACCESS_KEY_ID\", \"AWS_SECRET_ACCESS_KEY\": \"$AWS_SECRET_ACCESS_KEY\"}); restic_repo.save(); restic_repo.init_repo()"
     jsng "backupjob = j.sals.backupjob.new(\"owncloudbackupjob\", paths=[\"~/.config/jumpscale/\", \"~/sandbox/cfg/\", \"~/.ssh/\", \"/root/.tf_data/tf_states\"], paths_to_exclude=[\".config/jumpscale/logs\"]); backupjob.clients.append(\"restic_owncloud\"); backupjob.save()"
     echo "Backup configuration is complete."
 else
