@@ -21,7 +21,7 @@ class OwncloudBackupService(BackgroundService):
 
     # system BackupJob info
     ## this ResticRepo instance must be preconfigured and exist.
-    RESTIC_CLIENT_NAMES = ["resticclient1"]
+    RESTIC_CLIENT_NAMES = ["restic_owncloud"]
     ## paths to include in the BackupJob
     BACKUP_JOB_PATHS = ["~/.config/jumpscale/", "~/sandbox/cfg/", "~/.ssh/", "~/.tf_data/tf_states"]
     ## paths to exclude. absolute paths will not work as the exclude path should be inside one of the specified backup paths.
