@@ -41,7 +41,7 @@ for var in RESTIC_REPOSITORY RESTIC_PASSWORD AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS
 
 if [ $disable_backup == 0 ]; then
     poetry run jsng "restic_repo = j.tools.restic.new(\"resticclient1\", repo=\"$RESTIC_REPOSITORY\", password=\"$RESTIC_PASSWORD\", extra_env={\"AWS_ACCESS_KEY_ID\": \"$AWS_ACCESS_KEY_ID\", \"AWS_SECRET_ACCESS_KEY\": \"$AWS_SECRET_ACCESS_KEY\"}); restic_repo.init_repo(); restic_repo.save()"
-    poetry run jsng "backupjob = j.sals.backupjob.new(\"tfstatebackup\", paths=[\"/root/.tf_data/tf_states\", \"/data\"]); backupjob.clients.append\resticclient1\"); backupjob.save()"
+    poetry run jsng "backupjob = j.sals.backupjob.new(\"owncloudbackupjob\", paths=[\"~/.config/jumpscale/\", \"~/sandbox/cfg/\", \"~/.ssh/\", \"/root/.tf_data/tf_states\"]); backupjob.clients.append(\"resticclient1\"); backupjob.save()"
 else
     echo "Backup won't be configured, please check the docs at https://github.com/threefoldtech/owncloud_deployer for how to configure the server backup."
 fi
