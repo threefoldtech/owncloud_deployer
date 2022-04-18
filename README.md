@@ -15,6 +15,7 @@ jumpscale based package for owncloud 3 month fremuim deployment
 - python >= 3.8
 - js-sdk
 - node > 14 && yarn
+- Terraform
 
 ### Frontend
 
@@ -24,30 +25,34 @@ jumpscale based package for owncloud 3 month fremuim deployment
 ### Docker
 
 ```bash
-docker run -ti --name owncloud -e domain="<domain_name>" -e email_host="<mail_server_hostname>" -e email_port=<port> -e email_username="<email>" -e email_password="<password>" -e MNEMONICS="<MNEMONICS>" -e CHAIN_URL="wss://tfchain.dev.grid.tf/ws" -e NETWORK="dev" -e ADMINS="['<3bot_name>']" -e ALERT_EMAIL="<support_mail_address>" -p 80:80 -p 443:443 threefolddev/owncloud_deployer:0.1
+docker run -ti --name owncloud -e domain="<domain_name>" -e email_host="<mail_server_hostname>" -e email_port=<port> -e email_username="<email>" -e email_password="<password>" -e MNEMONICS="<MNEMONICS>" -e CHAIN_URL="wss://tfchain.dev.grid.tf/ws" -e NETWORK="dev" -e ADMINS="['<3bot_name>']" -e ALERT_EMAIL="<support_mail_address>" -e SUPPORT_PUBLIC_SSH_KEY="<public ssh key>" -p 80:80 -p 443:443 threefolddev/owncloud_deployer:0.1
 ```
 
-#### env
+#### ENV VARS 
+##### js-sdk env:
   
 - `domain`: domain of the site which will host the package (done in package.toml)
 - `email_host`, `email_port`, `email_username`, `email_password`: configurations of mail server
-- `MNEMONICS`: words of the account being used to deploy from
-- `CHAIN_URL`: url for the tfchain according to network
-- `NETWORK`: network to deploy on (default: dev)
-- `ADMINS`: list of system admins that will manage requests
+- `ADMINS`: list of system admins (3bot names) that will manage requests
 - `ALERT_EMAIL`: email which will receive wallet alerts
+- `NO_CERT`: if set to any non-empty value, server will start without a certificate.
+##### Balance server env:
+- `CHAIN_URL`: url for the tfchain according to network
+- `MNEMONICS`: words of the account being used to deploy from
 
-##### terraform and terraform client env
-
+##### terraform and terraform client env:
+- `MNEMONICS`: words of the account being used to deploy from
+- `NETWORK`: grid network to deploy on, one of: [dev, test, main]. default to dev.
 - `TF_SOURCE_MODULE_DIR`: the configuration directory, will be copied into the target directory before any other initialization steps are run.
 - `TF_PLUGIN_CACHE_DIR`: enable caching. optional.
 - `TF_IN_AUTOMATION`: if set to any non-empty value, Terraform adjusts its output to avoid suggesting specific commands to run next. This can make the output more consistent and less confusing. optional.
+- `SUPPORT_PUBLIC_SSH_KEY`: public ssh key to be added to Owncloud instances's  ~/.ssh/authorized_keys.
 
 ### Helm
 
 Refer to helm docs in [helmcharts/owncloud/README.md](helmcharts/owncloud/README.md)
 
-#### local running
+### local running
 
 1- Export previous variables
 2- Configure mail client
@@ -67,7 +72,7 @@ Refer to helm docs in [helmcharts/owncloud/README.md](helmcharts/owncloud/README
 
 - `/#/requests`: in this page dev-ops can approve requests to start deployment and check the statuses
 
-#### Endpoints
+#### API Endpoints
 
 ##### `/owncloud/api/requests` [GET] (admin only)
 
