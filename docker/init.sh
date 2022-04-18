@@ -30,3 +30,18 @@ jsng "j.servers.threebot.default.packages.add(path='/owncloud_deployer/jumpscale
 
 # Set email server config
 jsng "email_server_config = {\"host\": \"$email_host\", \"port\": "$email_port", \"username\": \"$email_username\", \"password\": \"$email_password\"}; j.core.config.set(\"EMAIL_SERVER_CONFIG\", email_server_config)"
+
+# Configure restic client for backup
+echo "Backup configuration started"
+disable_backup=0
+for var in RESTIC_REPOSITORY RESTIC_PASSWORD AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY
+    do
+        [[ ! -z "${var}" ]] && echo "Backup configuration: Environment variable $var is not set!" && disable_backup=1;
+    done
+
+if [ $disable_backup == 0 ]; then
+    poetry run jsng "restic_repo = j.tools.restic.new(\"resticclient1\", repo=\"$RESTIC_REPOSITORY\", password=\"$RESTIC_PASSWORD\", extra_env={\"AWS_ACCESS_KEY_ID\": \"$AWS_ACCESS_KEY_ID\", \"AWS_SECRET_ACCESS_KEY\": \"$AWS_SECRET_ACCESS_KEY\"}); restic_repo.init_repo(); restic_repo.save()"
+    poetry run jsng "backupjob = j.sals.backupjob.new(\"tfstatebackup\", paths=[\"/root/.tf_data/tf_states\", \"/data\"]); backupjob.clients.append\resticclient1\"); backupjob.save()"
+else
+    echo "Backup won't be configured, check Docs at https://github.com/threefoldtech/owncloud_deployer for configuring the backup."
+fi

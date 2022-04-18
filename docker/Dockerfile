@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y git curl wget \
                 tmux \
                 nginx \
                 build-essential \
+                restic \
     && pip3 install poetry
 
 RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - &&\
