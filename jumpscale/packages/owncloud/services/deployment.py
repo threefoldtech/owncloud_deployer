@@ -188,7 +188,7 @@ def _schedule_mail_task(user_name, user_email, domain, admin_name, admin_passwor
     mail_info = {
         "recipients_emails": user_email,
         "sender": "no-reply@threefold.io",
-        "subject": "Your Owncloud login credentials",
+        "subject": "Your Owncloud Login Credentials",
         "message": dedent(message),
     }
     j.logger.info(f"pushing mail task for user {user_name}")
