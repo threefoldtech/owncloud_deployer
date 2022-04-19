@@ -30,3 +30,18 @@ jsng "j.servers.threebot.default.packages.add(path='/owncloud_deployer/jumpscale
 
 # Set email server config
 jsng "email_server_config = {\"host\": \"$email_host\", \"port\": "$email_port", \"username\": \"$email_username\", \"password\": \"$email_password\"}; j.core.config.set(\"EMAIL_SERVER_CONFIG\", email_server_config)"
+
+# Configure restic client for backup
+echo "Backup configuration started"
+disable_backup=0
+for var in RESTIC_REPOSITORY RESTIC_PASSWORD AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY
+    do
+        [[ -z "${!var}" ]] && echo "Backup configuration: Environment variable $var is not set!" && disable_backup=1;
+    done
+
+if [ $disable_backup == 0 ]; then
+    jsng "restic_repo = j.tools.restic.new(\"systembackupclient\", repo=\"$RESTIC_REPOSITORY\", password=\"$RESTIC_PASSWORD\", extra_env={\"AWS_ACCESS_KEY_ID\": \"$AWS_ACCESS_KEY_ID\", \"AWS_SECRET_ACCESS_KEY\": \"$AWS_SECRET_ACCESS_KEY\"}); restic_repo.save(); restic_repo.init_repo()"
+    echo "Backup configuration is complete."
+else
+    echo "Backup won't be configured, please check the docs at https://github.com/threefoldtech/owncloud_deployer for how to configure the server backup."
+fi

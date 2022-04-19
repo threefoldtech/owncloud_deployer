@@ -25,28 +25,36 @@ jumpscale based package for owncloud 3 month fremuim deployment
 ### Docker
 
 ```bash
-docker run -ti --name owncloud -e domain="<domain_name>" -e email_host="<mail_server_hostname>" -e email_port=<port> -e email_username="<email>" -e email_password="<password>" -e MNEMONICS="<MNEMONICS>" -e CHAIN_URL="wss://tfchain.dev.grid.tf/ws" -e NETWORK="dev" -e ADMINS="['<3bot_name>']" -e ALERT_EMAIL="<support_mail_address>" -e SUPPORT_PUBLIC_SSH_KEY="<public ssh key>" -p 80:80 -p 443:443 threefolddev/owncloud_deployer:0.1
+docker run -ti --name owncloud -e domain="<domain_name>" -e email_host="<mail_server_hostname>" -e email_port=<port> -e email_username="<email>" -e email_password="<password>" -e MNEMONICS="<MNEMONICS>" -e CHAIN_URL="wss://tfchain.dev.grid.tf/ws" -e NETWORK="dev" -e ADMINS="['<3bot_name>']" -e ALERT_EMAIL="<support_mail_address>" -e SUPPORT_PUBLIC_SSH_KEY="<public ssh key>" -e RESTIC_REPOSITORY="<RESTIC_REPOSITORY_URL>" -e RESTIC_PASSWORD="<RESTIC_REPOSITORY_PASSWORD>" -e AWS_ACCESS_KEY_ID="<MY_ACCESS_KEY_ID>" -e AWS_SECRET_ACCESS_KEY= "<MY_SECRET_ACCESS_KEY>"-p 80:80 -p 443:443 threefolddev/owncloud_deployer:0.1
 ```
 
 #### ENV VARS 
 ##### js-sdk env:
   
-- `domain`: domain of the site which will host the package (done in package.toml)
-- `email_host`, `email_port`, `email_username`, `email_password`: configurations of mail server
-- `ADMINS`: list of system admins (3bot names) that will manage requests
-- `ALERT_EMAIL`: email which will receive wallet alerts
+- `domain`: domain of the site which will host the package (done in package.toml).
+- `email_host`, `email_port`, `email_username`, `email_password`: configurations of mail server.
+- `ADMINS`: list of system admins (3bot names) that will manage requests.
+- `ALERT_EMAIL`: email which will receive wallet alerts.
 - `NO_CERT`: if set to any non-empty value, server will start without a certificate.
 ##### Balance server env:
-- `CHAIN_URL`: url for the tfchain according to network
-- `MNEMONICS`: words of the account being used to deploy from
+- `CHAIN_URL`: url for the tfchain according to network.
+- `MNEMONICS`: words of the account being used to deploy from.
 
 ##### terraform and terraform client env:
-- `MNEMONICS`: words of the account being used to deploy from
+- `MNEMONICS`: words of the account being used to deploy from.
 - `NETWORK`: grid network to deploy on, one of: [dev, test, main]. default to dev.
 - `TF_SOURCE_MODULE_DIR`: the configuration directory, will be copied into the target directory before any other initialization steps are run.
 - `TF_PLUGIN_CACHE_DIR`: enable caching. optional.
 - `TF_IN_AUTOMATION`: if set to any non-empty value, Terraform adjusts its output to avoid suggesting specific commands to run next. This can make the output more consistent and less confusing. optional.
 - `SUPPORT_PUBLIC_SSH_KEY`: public ssh key to be added to Owncloud instances's  ~/.ssh/authorized_keys.
+
+##### Restic Backup configuration - optional:
+- `RESTIC_REPOSITORY`: The repository location where your backups will be saved. can be stored locally, or on some remote server or service. read here for more information on [restic](https://restic.readthedocs.io/en/latest/030_preparing_a_new_repo.html).
+- `RESTIC_PASSWORD`: Backup password. If you lose it, you won’t be able to access data stored in the repository.
+  
+  For an Amazon S3 or S3-compatible server you will need also provide the following environment variables with the credentials you obtained while creating the bucket.
+- `AWS_ACCESS_KEY_ID`
+- `AWS_SECRET_ACCESS_KEY`
 
 ### Helm
 

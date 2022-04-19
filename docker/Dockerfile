@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y git curl wget \
                 tmux \
                 nginx \
                 build-essential \
+                restic \
     && pip3 install poetry
 
 RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - &&\
@@ -49,10 +50,8 @@ COPY tf_source_module /root/tf_source_module
 COPY rootfs /
 
 RUN mkdir /data
-RUN mkdir -p /root/.tf_data/tf_states
 
 VOLUME /data
-VOLUME /root/.tf_data/tf_states
 
 EXPOSE 443 80
 
