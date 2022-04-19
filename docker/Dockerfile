@@ -50,10 +50,8 @@ COPY tf_source_module /root/tf_source_module
 COPY rootfs /
 
 RUN mkdir /data
-RUN mkdir -p /root/.tf_data/tf_states
 
 VOLUME /data
-VOLUME /root/.tf_data/tf_states
 
 EXPOSE 443 80
 

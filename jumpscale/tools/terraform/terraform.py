@@ -139,9 +139,8 @@ from enum import Enum, auto
 TF_BINARY = "terraform"
 # although it is not the client responsibility to provide this paths,
 # it provides a default values for plugin_dir, and state_dir that user can override.
-ROOT_PATH = os.path.join(os.path.expanduser("~"), "tf_data")
-PLUGIN_DIR = os.path.join(ROOT_PATH, "tf_plugins")
-STATES_DIR = os.path.join(ROOT_PATH, "tf_states")
+PLUGIN_DIR = j.sals.fs.join_paths(j.sals.fs.expanduser("~"), ".tf_plugins")
+STATES_DIR = j.sals.fs.join_paths(j.core.dirs.CFGDIR, ".tf_states")
 
 SHOW_TF_COMMAND_OUTPUT = os.environ.get("TF_CLIENT_DEBUG", False) == "true"
 
