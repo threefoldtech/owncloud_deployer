@@ -25,7 +25,7 @@ jumpscale based package for owncloud 3 month fremuim deployment
 ### Docker
 
 ```bash
-docker run -ti --name owncloud -e domain="<domain_name>" -e email_host="<mail_server_hostname>" -e email_port=<port> -e email_username="<email>" -e email_password="<password>" -e MNEMONICS="<MNEMONICS>" -e CHAIN_URL="wss://tfchain.dev.grid.tf/ws" -e NETWORK="dev" -e ADMINS="['<3bot_name>']" -e ALERT_EMAIL="<support_mail_address>" -e SUPPORT_PUBLIC_SSH_KEY="<public ssh key>" -e RESTIC_REPOSITORY="<RESTIC_REPOSITORY_URL>" -e RESTIC_PASSWORD="<RESTIC_REPOSITORY_PASSWORD>" -e AWS_ACCESS_KEY_ID="<MY_ACCESS_KEY_ID>" -e AWS_SECRET_ACCESS_KEY= "<MY_SECRET_ACCESS_KEY>"-p 80:80 -p 443:443 threefolddev/owncloud_deployer:latest
+docker run -ti --name owncloud -e domain='<domain_name>' -e email_host='<mail_server_hostname>' -e email_port=<port> -e email_username='<email>' -e email_password='<password>' -e MNEMONICS='<MNEMONICS>' -e CHAIN_URL='wss://tfchain.dev.grid.tf/ws' -e NETWORK='dev' -e ADMINS="['<3bot_name>']" -e ALERT_EMAIL='<support_mail_address>' -e SUPPORT_PUBLIC_SSH_KEY='<public ssh key>' -e RESTIC_REPOSITORY='<RESTIC_REPOSITORY_URL>' -e RESTIC_PASSWORD='<RESTIC_REPOSITORY_PASSWORD>' -e AWS_ACCESS_KEY_ID='<MY_ACCESS_KEY_ID>' -e AWS_SECRET_ACCESS_KEY='<MY_SECRET_ACCESS_KEY>' -p 80:80 -p 443:443 threefolddev/owncloud_deployer:latest
 ```
 
 #### ENV VARS 
@@ -76,9 +76,9 @@ Refer to helm docs in [helmcharts/owncloud/README.md](helmcharts/owncloud/README
 
 ### User Endpoints
 
-- `/`: in this page user will enter his email address, if it's empty TF-Connect email will be taken
+- `/owncloud/`: in this page user will enter his email address, if it's empty TF-Connect email will be taken
 
-- `/#/requests`: in this page dev-ops can approve requests to start deployment and check the statuses
+- `/owncloud/#/requests`: in this page dev-ops can approve requests to start deployment and check the statuses
 
 #### API Endpoints
 
@@ -100,7 +100,7 @@ Example response
 
 ```
 
-##### `/owncloud/api/requests` [POST]
+##### `/owncloud/api/requests` [POST] (admin only)
 
 - Register new user with email if provided (optional)
 
