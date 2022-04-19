@@ -32,8 +32,10 @@ class Deployment(BackgroundService):
     def deploy(self):
         """pull tasks from redis queue, apply, retry, and mark deployments as done, or failed"""
         # check if the source module directory is exists and not empty
-        if not SOURCE_MODULE_DIR or not j.sals.fs.exists(SOURCE_MODULE_DIR) or j.sals.fs.is_empty_dir(
-            SOURCE_MODULE_DIR
+        if (
+            not SOURCE_MODULE_DIR
+            or not j.sals.fs.exists(SOURCE_MODULE_DIR)
+            or j.sals.fs.is_empty_dir(SOURCE_MODULE_DIR)
         ):
             j.logger.critical("source module directory is not set, not exists or empty")
             return
@@ -41,10 +43,14 @@ class Deployment(BackgroundService):
         while True:
             user_info_json = j.core.db.blpop(DEPLOYMENT_QUEUE)[1]
             user_name = j.data.serializers.json.loads(user_info_json)
-            balance = j.tools.http.get("http://localhost:3001/balance").json().get("balance")
+            balance = (
+                j.tools.http.get("http://localhost:3001/balance").json().get("balance")
+            )
             if float(balance) < 1000:
                 j.core.db.zadd(DEPLOYMENT_QUEUE, user_info_json)
-                j.logger.error(f"Wallet balance is less than 1000 TFT please add more TFTs in the wallet. new deployments will be queued")
+                j.logger.error(
+                    f"Wallet balance is less than 1000 TFT please add more TFTs in the wallet. new deployments will be queued"
+                )
                 j.logger.error(f"deployment service will exit now!")
                 return
             user = deployment_model.get(user_name)
@@ -122,14 +128,15 @@ class Deployment(BackgroundService):
                 j.logger.debug(f"deployment service released tf lock")
             except Exception as e:
                 user.status = UserStatus.APPLY_FAILURE
-                user.error_message = f"failed to deploy for user {user_name}, error message:\n{str(e)}"
+                user.error_message = (
+                    f"failed to deploy for user {user_name}, error message:\n{str(e)}"
+                )
                 user.save()
                 j.logger.debug(f"deployment service released tf lock")
                 j.logger.error(
                     f"failed to deploy for user {user_name}, error message:\n{e.args}"
                 )
                 j.logger.exception(f"failed to deploy for user {user_name}", e)
-
 
 
 def _apply_user_deployment(client, name):
@@ -170,15 +177,18 @@ def _clean_leftover_resources(client, name):
 def _schedule_mail_task(user_name, user_email, domain, admin_name, admin_password):
     message = f"""\
         Dear {user_name}
-    Your Owncloud instance will be ready in few minutes, please use these credentials to access it. \n
+    Your Owncloud instance on the TFGrid will be ready in just few minutes, please use these credentials to access it. \n
     Domain: {domain}
     Admin username: {admin_name}
-    Admin password: {admin_password}
+    Admin password: {admin_password}\n
+    Please make sure to change your password after you first login.\n
+    Happy OwnClouding,
+    The Threefold Team
     """
     mail_info = {
         "recipients_emails": user_email,
         "sender": "no-reply@threefold.io",
-        "subject": "Owncloud deployment",
+        "subject": "Your Owncloud login credentials",
         "message": dedent(message),
     }
     j.logger.info(f"pushing mail task for user {user_name}")
