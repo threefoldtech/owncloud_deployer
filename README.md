@@ -60,19 +60,96 @@ docker run -ti --name owncloud -e domain='<domain_name>' -e email_host='<mail_se
 
 Refer to helm docs in [helmcharts/owncloud/README.md](helmcharts/owncloud/README.md)
 
-### local running
+### Install from Source Code
 
-1- Export previous variables
-2- Configure mail client
+1 - install System requirements
 
-  ```bash
-  j.core.config.set("EMAIL_SERVER_CONFIG", {'host': 'smtp.gmail.com', 'port': '587', 'username': '', 'password': ''}) 
-  ```
+```sh
+apt-get update
+apt-get install -y git python3-venv python3-pip redis-server tmux nginx build-essential restic
+# install poetry
+curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python3 -
+# install nodejs
+curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+apt-get install -y nodejs
+# install yarn
+curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor | sudo tee /usr/share/keyrings/yarnkey.gpg >/dev/null
+echo "deb [signed-by=/usr/share/keyrings/yarnkey.gpg] https://dl.yarnpkg.com/debian stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+apt-get update && sudo apt-get install -y yarn
+# install terraform
+apt-get update && apt-get install -y gnupg software-properties-common curl
+curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add -
+apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+apt-get update && apt-get install -y terraform
+```
 
-3- build frontend
-3- Add the package to the server
-4- Start the server
-5- Go to <https://domain> you'll find the website
+2 - clone the repo
+```sh
+git clone https://github.com/threefoldtech/owncloud_deployer.git
+```
+
+3 - Prepare the environment and install the python dependencies
+```sh
+cd owncloud_deployer
+poetry install # source $HOME/.poetry/env
+```
+
+4 - make sure your terraform configuration file in place
+```sh
+cp docker/tf_source_module/main.tf $HOME/tf_source_module
+```
+
+5 - create the cache dir
+```
+mkdir -p $HOME/.terraform.d/plugin-cache
+```
+
+6 - install the node balanace server dependencies:
+```sh
+yarn --cwd ./balance_server
+```
+
+7 - build frontend if needed
+
+8 - activate the environment
+```sh
+poetry shell
+```
+
+9 - Export required env variables
+```sh
+export MNEMONICS="<YOUR-MNEMONICS>"
+export CHAIN_URL="wss://tfchain.dev.grid.tf/ws"
+export TF_SOURCE_MODULE_DIR="$HOME/tf_source_module"
+export TF_PLUGIN_CACHE_DIR="$HOME/.terraform.d/plugin-cache"
+export NETWORK=dev
+export TF_IN_AUTOMATION=true
+```
+
+10 - start the Node balanace server
+```sh
+node balance_server/index.js &  # 
+```
+
+11 - start jsng
+```sh
+jsng
+```
+
+12 - Configure the server
+```
+ident=j.core.identity.new("default", "ownclouddeployertest10.3bot", "ownclouddeployertest10@incubaid.com", network="testnet", admins=["samehabouelsaad.3bot"]); ident.register(); ident.save()
+j.servers.threebot.new("default"); j.servers.threebot.default.save()
+j.core.config.set("EMAIL_SERVER_CONFIG", {'host': 'smtp.gmail.com', 'port': '587', 'username': '', 'password': ''}) 
+j.servers.threebot.default.packages.add(path='/root/owncloud_deployer/jumpscale/packages/owncloud')
+```
+
+13 - start the server
+```
+threebot start --local
+```
+
+14 - Server is running at http://localhost:8080 and https://localhost:8443
 
 ### User Endpoints
 
