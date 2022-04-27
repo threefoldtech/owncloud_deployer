@@ -20,8 +20,8 @@ host = "0.0.0.0"
 
 [[servers]]
 name = "owncloud"
-domain = "waleed.threefold.io"
-letsencryptemail = "hammamw@incubaid.com"
+domain = ""
+letsencryptemail = ""
 includes = ["default_443.chatflows_*", "default_443.auth_*", "default_443.owncloud*"]
 
 [[servers.locations]]
