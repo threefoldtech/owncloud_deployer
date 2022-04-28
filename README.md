@@ -142,7 +142,7 @@ jsng
 ident=j.core.identity.new("default", "ownclouddeployertest10.3bot", "ownclouddeployertest10@incubaid.com", network="testnet", admins=["samehabouelsaad.3bot"]); ident.register(); ident.save()
 j.servers.threebot.new("default"); j.servers.threebot.default.save()
 j.core.config.set("EMAIL_SERVER_CONFIG", {'host': 'smtp.gmail.com', 'port': '587', 'username': '', 'password': ''}) 
-j.servers.threebot.default.packages.add(path='/root/owncloud_deployer/jumpscale/packages/owncloud')
+j.servers.threebot.default.packages.add(path='/root/owncloud_deployer/jumpscale/packages/owncloud', domain=<domain>, letsencryptemail=<letsencryptemail>)
 ```
 
 13 - start the server
