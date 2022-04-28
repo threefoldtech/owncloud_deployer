@@ -8,7 +8,8 @@ name = "frontend"
 path_url = ""
 path_location = "frontend/dist/"
 index = "index.html"
-spa = false
+spa = true
+is_auth = true
 
 [[bottle_servers]]
 name = "main"
