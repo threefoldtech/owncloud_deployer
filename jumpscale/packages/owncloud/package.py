@@ -1,7 +1,7 @@
 import toml
+from pathlib import Path
 
-PACKAGE_CONFIG_PATH = 'package.toml'
-
+PACKAGE_CONFIG_PATH = Path(__file__).parent.resolve() / 'package.toml'
 class owncloud:
     def install(self, **kwargs):
         domain = kwargs.get('domain')
