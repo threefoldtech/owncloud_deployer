@@ -1,25 +1,28 @@
+from jumpscale.loader import j
+from jumpscale.sals.fs import pathlib
 import toml
-from pathlib import Path
 
-PACKAGE_CONFIG_PATH = Path(__file__).parent.resolve() / 'package.toml'
+PACKAGE_CONFIG_PATH = pathlib.Path(__file__).parent.resolve() / 'package.toml'
 class owncloud:
     def install(self, **kwargs):
         domain = kwargs.get('domain')
         letsencryptemail = kwargs.get('letsencryptemail')
+        j.logger.debug('Installing owncloud package..')
         if not all([domain, letsencryptemail]):
-            raise(f'usage: j.servers.threebot.default.packages.add(path="<package_path>", domain="<domain>", letsencryptemail="<letsencryptemail>")')
+            j.logger.warning('One or more required parameters missing. Please provide domain and letsencryptemail')
+            j.logger.warning(f'Usage: j.servers.threebot.default.packages.add(path="<package_path>", domain="<domain>", letsencryptemail="<letsencryptemail>")')
         
         with open(PACKAGE_CONFIG_PATH, 'rt') as f:
             parsed_toml = toml.load(f)
         
         if domain:
             parsed_toml['servers'][0]['domain'] = domain
-            print(f"set the domain to {domain}")
+            j.logger.debug(f"set the domain to {domain}")
 
         if letsencryptemail:
             parsed_toml['servers'][0]['letsencryptemail'] = letsencryptemail
-            print(f"set the email to {letsencryptemail}")
+            j.logger.debug(f"set the email to {letsencryptemail}")
 
         with open(PACKAGE_CONFIG_PATH, 'wt') as f:
             _ = toml.dump(parsed_toml, f)
-        print('Package installation complete!')
+        j.logger.info('owncloud package installed successfully!')
