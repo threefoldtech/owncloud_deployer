@@ -25,13 +25,14 @@ jumpscale based package for owncloud 3 month fremuim deployment
 ### Docker
 
 ```bash
-docker run -ti --name owncloud -e domain='<domain_name>' -e email_host='<mail_server_hostname>' -e email_port=<port> -e email_username='<email>' -e email_password='<password>' -e MNEMONICS='<MNEMONICS>' -e CHAIN_URL='wss://tfchain.dev.grid.tf/ws' -e NETWORK='dev' -e ADMINS="['<3bot_name>']" -e ALERT_EMAIL='<support_mail_address>' -e SUPPORT_PUBLIC_SSH_KEY='<public ssh key>' -e RESTIC_REPOSITORY='<RESTIC_REPOSITORY_URL>' -e RESTIC_PASSWORD='<RESTIC_REPOSITORY_PASSWORD>' -e AWS_ACCESS_KEY_ID='<MY_ACCESS_KEY_ID>' -e AWS_SECRET_ACCESS_KEY='<MY_SECRET_ACCESS_KEY>' -p 80:80 -p 443:443 threefolddev/owncloud_deployer:latest
+docker run -ti --name owncloud -e domain='<domain_name>' -e letsencryptemail='<email_address>' -e email_host='<mail_server_hostname>' -e email_port=<port> -e email_username='<email>' -e email_password='<password>' -e MNEMONICS='<MNEMONICS>' -e CHAIN_URL='wss://tfchain.dev.grid.tf/ws' -e NETWORK='dev' -e ADMINS="['<3bot_name>']" -e ALERT_EMAIL='<support_mail_address>' -e SUPPORT_PUBLIC_SSH_KEY='<public ssh key>' -e RESTIC_REPOSITORY='<RESTIC_REPOSITORY_URL>' -e RESTIC_PASSWORD='<RESTIC_REPOSITORY_PASSWORD>' -e AWS_ACCESS_KEY_ID='<MY_ACCESS_KEY_ID>' -e AWS_SECRET_ACCESS_KEY='<MY_SECRET_ACCESS_KEY>' -p 80:80 -p 443:443 threefolddev/owncloud_deployer:latest
 ```
 
 #### ENV VARS 
 ##### js-sdk env:
   
-- `domain`: domain of the site which will host the package (done in package.toml).
+- `domain`: domain of the site which will host the package.
+- `letsencryptemail`: let's Encrypt admin email to receive expiry notices when your certificate is coming up for renewal.
 - `email_host`, `email_port`, `email_username`, `email_password`: configurations of mail server.
 - `ADMINS`: list of system admins (3bot names) that will manage requests.
 - `ALERT_EMAIL`: email which will receive wallet alerts.
@@ -141,7 +142,7 @@ jsng
 ident=j.core.identity.new("default", "ownclouddeployertest10.3bot", "ownclouddeployertest10@incubaid.com", network="testnet", admins=["samehabouelsaad.3bot"]); ident.register(); ident.save()
 j.servers.threebot.new("default"); j.servers.threebot.default.save()
 j.core.config.set("EMAIL_SERVER_CONFIG", {'host': 'smtp.gmail.com', 'port': '587', 'username': '', 'password': ''}) 
-j.servers.threebot.default.packages.add(path='/root/owncloud_deployer/jumpscale/packages/owncloud')
+j.servers.threebot.default.packages.add(path='/root/owncloud_deployer/jumpscale/packages/owncloud', domain=<domain>, letsencryptemail=<letsencryptemail>)
 ```
 
 13 - start the server
