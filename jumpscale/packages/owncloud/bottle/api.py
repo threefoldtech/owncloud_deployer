@@ -2,8 +2,8 @@ import csv
 
 from jumpscale.loader import j
 from jumpscale.packages.auth.bottle.auth import admin_only, get_user_info, login_required
-from owncloud.models.users import UserStatus
-from owncloud.models import deployment_model
+from jumpscale.packages.owncloud.models.users import UserStatus
+from jumpscale.packages.owncloud.models import deployment_model
 
 from bottle import Bottle, request, HTTPResponse, static_file
 

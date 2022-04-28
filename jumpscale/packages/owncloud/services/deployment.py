@@ -2,10 +2,10 @@ import os
 from jumpscale.loader import j
 from textwrap import dedent
 from jumpscale.tools.servicemanager.servicemanager import BackgroundService
-from owncloud.models import deployment_model
-from owncloud.models.users import UserStatus
+from jumpscale.packages.owncloud.models import deployment_model
+from jumpscale.packages.owncloud.models.users import UserStatus
 
-from owncloud.models.lock import Lock
+from jumpscale.packages.owncloud.models.lock import Lock
 
 DEPLOYMENT_QUEUE = "DEPLOYMENT_QUEUE"
 MAIL_QUEUE = "MAIL_QUEUE"
