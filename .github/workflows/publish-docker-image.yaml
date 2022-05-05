@@ -1,0 +1,43 @@
+# Publishing images to Docker Hub threefolddev/owncloud_deployer
+# Event         Ref                       Docker Tags
+# push tag	    refs/tags/v1.2.3	        1.2.3, latest
+# push tag	    refs/tags/v2.0.8-beta.67	2.0.8-beta.67
+# An edge tag reflects the last commit of the main branch.
+
+name: Publish Docker image
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  push_to_registry:
+    name: Push Docker image to Docker Hub
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+      
+      - name: Log in to Docker Hub
+        uses: docker/login-action
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action
+        with:
+          images: threefolddev/owncloud_deployer
+          tags: |
+            type=semver,pattern={{version}}
+            type=edge,branch=main
+      
+      - name: Build and push Docker image
+        uses: docker/build-push-action
+        with:
+          context: ./docker/
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
