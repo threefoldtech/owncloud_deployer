@@ -94,7 +94,7 @@ export default {
     emailRules: [
       (v) =>
         !v ||
-        /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
+        /^\S+@\b((?=[a-z0-9-]{1,63}\.)(xn--)?[a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,63}\b$/.test(v) ||
         "E-mail must be valid",
     ],
     checkbox: null,
