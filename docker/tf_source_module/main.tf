@@ -46,7 +46,7 @@ resource "grid_scheduler" "sched" {
   requests {
     name = local.server_req
     cru = local.vm_cpu
-    sru = local.disk_size + local.rootfs_size
+    sru = (local.disk_size + local.rootfs_size) * 1024
     mru = local.vm_memory
   }
 
