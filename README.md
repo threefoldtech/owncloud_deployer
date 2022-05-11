@@ -23,10 +23,47 @@ jumpscale based package for owncloud 3 month fremuim deployment
 - Push your changes
 
 ### Docker
+#### Running using Docker-compose
+the recommended method to run the deployer in production is using docker-compose.
+
+make sure to add your variables to `owncloud-deployer-variables.env` file. check `owncloud-deployer-variables.env.example` for a example configurations.
+
+then just do
+
+```sh
+docker-compose up -d
+```
+
+when you spin the service, by default it will use `latest` tag to pull the deployer image of the latest released version. for latest build image enhancements and fixes from our current sprint, you can use `edge` Tag or even specify a specific image version. before `up` command execute the code below
+
+```sh
+export OD_IMAGE_TAG=edge
+```
+
+#### Update Owncloud-Deployer
+you can update the running container easily
+
+```sh
+docker-compose pull
+docker-compose up -d --remove-orphans
+docker image prune -f # optionally
+```
+
+#### Restart Owncloud-Deployer
+```sh
+docker-compose restart owncloud-deployer
+```
+Note: If you make changes to your docker-compose.yml configuration or changes to environment variables these changes are not reflected after running this command.
+
+#### running using docker
+
+you can spin the container by executing the command below, not recommended in production.
 
 ```bash
 docker run -ti --name owncloud -e domain='<domain_name>' -e letsencryptemail='<email_address>' -e email_host='<mail_server_hostname>' -e email_port=<port> -e email_username='<email>' -e email_password='<password>' -e MNEMONICS='<MNEMONICS>' -e CHAIN_URL='wss://tfchain.dev.grid.tf/ws' -e NETWORK='dev' -e ADMINS="['<3bot_name>']" -e ALERT_EMAIL='<support_mail_address>' -e SUPPORT_PUBLIC_SSH_KEY='<public ssh key>' -e RESTIC_REPOSITORY='<RESTIC_REPOSITORY_URL>' -e RESTIC_PASSWORD='<RESTIC_REPOSITORY_PASSWORD>' -e AWS_ACCESS_KEY_ID='<MY_ACCESS_KEY_ID>' -e AWS_SECRET_ACCESS_KEY='<MY_SECRET_ACCESS_KEY>' -p 80:80 -p 443:443 threefolddev/owncloud_deployer:latest
 ```
+
+ Note: Docker will create a local volume without a name. The result will be a long unique id string for the volume that contains no reference to the container it's attached to. Unless Docker is told to to remove volumes when containers are removed, these 'anonymous' volumes will remain, unlikely to be used again.
 
 #### ENV VARS 
 ##### js-sdk env:
@@ -123,7 +160,7 @@ export MNEMONICS="<YOUR-MNEMONICS>"
 export CHAIN_URL="wss://tfchain.dev.grid.tf/ws"
 export TF_SOURCE_MODULE_DIR="$HOME/tf_source_module"
 export TF_PLUGIN_CACHE_DIR="$HOME/.terraform.d/plugin-cache"
-export NETWORK=dev
+export NETWORK=dev # or test 
 export TF_IN_AUTOMATION=true
 ```
 

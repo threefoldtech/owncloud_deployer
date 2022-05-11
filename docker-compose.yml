@@ -1,0 +1,26 @@
+version: '3'
+services:
+  owncloud-deployer:
+    image: "threefolddev/owncloud_deployer:${OD_IMAGE_TAG:-latest}"
+    ports:
+      - 80:80
+      - 443:443
+    env_file:
+    - owncloud-deployer-variables.env
+    volumes:
+      - od-db-data:/root/.config/jumpscale/secureconfig/jumpscale
+      - od-tf-states:/root/sandbox/cfg/.tf_states
+    # set restart licy to always, so we can restart the container if it crashes
+    restart: always
+    # set a health check to make sure the container is running properly
+    healthcheck:
+      test: curl -f -s -k -L http://localhost/owncloud && curl -f -s -k -L http://localhost:3001/balance
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  od-db-data:
+  od-tf-states:
+
