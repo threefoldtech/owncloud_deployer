@@ -8,7 +8,7 @@ services:
     env_file:
     - owncloud-deployer-variables.env
     volumes:
-      - od-db-data:/root/.config/jumpscale/secureconfig/jumpscale
+      - od-db-data:/root/.config/jumpscale
       - od-tf-states:/root/sandbox/cfg/.tf_states
     # set restart licy to always, so we can restart the container if it crashes
     restart: always
