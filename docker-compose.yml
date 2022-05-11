@@ -1,4 +1,4 @@
-version: '3'
+version: '3.7'
 services:
   owncloud-deployer:
     image: "threefolddev/owncloud_deployer:${OD_IMAGE_TAG:-latest}"
