@@ -49,9 +49,10 @@ RUN mkdir -p /root/.terraform.d/plugin-cache
 COPY tf_source_module /root/tf_source_module
 COPY rootfs /
 
-RUN mkdir /data
+RUN mkdir -p /root/.config/jumpscale && \
+    mkdir -p /root/sandbox/cfg/.tf_states/
 
-VOLUME /data
+VOLUME /root/.config/jumpscale/ /root/sandbox/cfg/.tf_states/
 
 EXPOSE 443 80
 
