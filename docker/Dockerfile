@@ -12,7 +12,9 @@ RUN apt-get update && apt-get install -y git curl wget \
                 nginx \
                 build-essential \
                 restic \
-    && pip3 install poetry
+    && curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python3 -
+
+ENV PATH="${PATH}:/root/.poetry/bin"
 
 RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - &&\
     apt-get install -y nodejs &&\
