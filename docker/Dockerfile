@@ -39,8 +39,10 @@ RUN cd jumpscale/packages/owncloud/frontend/ && \
 
 RUN cd balance_server && \
     yarn
-
-RUN poetry config virtualenvs.create false && poetry install --no-dev
+# https://github.com/threefoldtech/owncloud_deployer/issues/39
+RUN poetry config experimental.new-installer false && \
+    poetry config virtualenvs.create false && \
+    poetry install --no-dev --no-ansi --no-interaction
 #ENV PATH="$(poetry env info --path)/bin:$PATH"
 # terrafrom env variables
 ENV TF_SOURCE_MODULE_DIR="/root/tf_source_module"
