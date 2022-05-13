@@ -252,3 +252,6 @@ Example response
 ##### `/owncloud/api/requests/export` [GET] (admin only)
 
 - Download a copy of all registered users as csv
+
+### Advanced Usage
+refer to [docs/](docs/)
