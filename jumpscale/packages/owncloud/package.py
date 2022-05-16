@@ -7,6 +7,7 @@ class owncloud:
     def install(self, **kwargs):
         domain = kwargs.get('domain')
         letsencryptemail = kwargs.get('letsencryptemail')
+        acme_url = kwargs.get('acme_url')
         j.logger.debug('Installing owncloud package..')
         if not all([domain, letsencryptemail]):
             j.logger.warning('One or more required parameters missing. Please provide domain and letsencryptemail')
@@ -22,6 +23,11 @@ class owncloud:
         if letsencryptemail:
             parsed_toml['servers'][0]['letsencryptemail'] = letsencryptemail
             j.logger.debug(f"set the email to {letsencryptemail}")
+
+        if acme_url:
+            parsed_toml['servers'][0]['acme_server_type'] = "custom"
+            parsed_toml['servers'][0]['acme_server_url'] = acme_url
+            j.logger.debug(f"set the acme_url to {acme_url}")
 
         with open(PACKAGE_CONFIG_PATH, 'wt') as f:
             _ = toml.dump(parsed_toml, f)

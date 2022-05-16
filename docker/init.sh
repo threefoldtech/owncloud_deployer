@@ -22,7 +22,7 @@ jsng "ident=j.core.identity.new(\"default\", \"$dummy_tname\", \"$dummy_email\",
 jsng 'j.servers.threebot.new("default"); j.servers.threebot.default.save()'
 
 # Add and Configure the package, make sure to set domain and letsencryptemail as env variables
-jsng "j.servers.threebot.default.packages.add(path=\"/owncloud_deployer/jumpscale/packages/owncloud\", domain=\"$domain\", letsencryptemail=\"$letsencryptemail\")"
+jsng "j.servers.threebot.default.packages.add(path=\"/owncloud_deployer/jumpscale/packages/owncloud\", domain=\"$domain\", letsencryptemail=\"$letsencryptemail\", acme_url=\"$ACME_URL\")"
 
 # Set email server config
 jsng "email_server_config = {\"host\": \"$email_host\", \"port\": "$email_port", \"username\": \"$email_username\", \"password\": \"$email_password\"}; j.core.config.set(\"EMAIL_SERVER_CONFIG\", email_server_config)"
