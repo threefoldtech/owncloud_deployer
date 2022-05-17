@@ -1,0 +1,26 @@
+
+name: update server
+
+# Only trigger, when the build workflow succeeded
+on:
+  workflow_run:
+    workflows: ["Publish Docker image"]
+    types:
+      - completed
+  workflow_dispatch:
+jobs:
+  job_one:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+    - name: deploy docker container with latest image on testnet instance    
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.DOMAIN }}
+        username: root
+        key: ${{ secrets.SSH_SECRET }}
+        port: 22
+        script: |
+          cd ~/owncloud_deployer
+          docker-compose pull
+          docker-compose up -d --remove-orphans
