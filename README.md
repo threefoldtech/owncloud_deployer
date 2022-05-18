@@ -74,6 +74,7 @@ docker run -ti --name owncloud -e domain='<domain_name>' -e letsencryptemail='<e
 - `ADMINS`: list of system admins (3bot names) that will manage requests.
 - `ALERT_EMAIL`: email which will receive wallet alerts.
 - `NO_CERT`: if set to any non-empty value, server will start without a certificate.
+- `ACME_URL`: url of the custom ACME server, otherwise letsencrypt will be used.
 ##### Balance server env:
 - `CHAIN_URL`: url for the tfchain according to network.
 - `MNEMONICS`: words of the account being used to deploy from.
