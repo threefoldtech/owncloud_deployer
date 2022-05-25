@@ -76,7 +76,7 @@ resource "grid_deployment" "nodes" {
   }
   vms {
     name        = "owncloud_${var.user}"
-    flist       = "https://hub.grid.tf/samehabouelsaad.3bot/abouelsaad-owncloud-10.9.1.flist"
+    flist       = "https://hub.grid.tf/samehabouelsaad.3bot/threefolddev-grid3_owncloud_10.9.1-latest.flist"
     entrypoint  = "/sbin/zinit init"
     cpu         = local.vm_cpu
     memory      = local.vm_memory
