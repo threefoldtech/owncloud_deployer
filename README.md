@@ -1,14 +1,19 @@
-# Owncloud Fremuim Deployment
+# Owncloud Deployer (OCD)
 
-jumpscale based package for owncloud 3 month fremuim deployment
+a provisioning portal for [Owncloud](https://owncloud.com/)  and automation cloud tool based on js-sdk and Terraform, enables the DevOps team to automate the OC VM provisioning on the Threefold revolutionary grid, handle users
+requests and manage deployments lifecycle in an efficient way.
 
-- user will ask to acquire his free instance
-- devops will approve the request
-- deployment will be done from the pre-configured account
-- user will receive email with deployment status and credentials
-- destruction service will destroy the deployment after the trial is over (90 days)
-- an email will be sent to user with trial is over
-- there's also a service to check wallet balance if it's < 1000 it'll send email to support
+Users can experience the Owncloud product on the ThreeFold grid as a freemium for a 3-months trial.
+
+## Provisioning process / User experience.
+
+- User will ask to acquire his free instance after authenticated with the threefold connect mobile app. optionally provide an alternative email address.
+- DevOps will approve the request from the admin dashboard.
+- provisioning will be automatically done/retried for approved requests. the pre-configured account/wallet will be billed.
+- User will receive an email with deployment status and credentials.
+- Destroy service will check predictably and destroy the deployment after the preconfigure trial period is over (90 days).
+- An email will be sent to the user after the trial is over.
+- There's also a service to check wallet balance if it's < 1000 it'll send an email to support email.
 
 ## requirements
 
@@ -34,7 +39,7 @@ then just do
 docker-compose up -d
 ```
 
-when you spin the service, by default it will use `latest` tag to pull the deployer image of the latest released version. for latest build image enhancements and fixes from our current sprint, you can use `edge` Tag or even specify a specific image version. before `up` command execute the code below
+when you spin the service, by default it will use `latest` tag to pull the deployer image of the latest released version. for the latest build image enhancements and fixes from our current sprint, you can use `edge` Tag or even specify a specific image version. before `up` command execute the code below
 
 ```sh
 export OD_IMAGE_TAG=edge
@@ -63,7 +68,7 @@ you can spin the container by executing the command below, not recommended in pr
 docker run -ti --name owncloud -e domain='<domain_name>' -e letsencryptemail='<email_address>' -e email_host='<mail_server_hostname>' -e email_port=<port> -e email_username='<email>' -e email_password='<password>' -e MNEMONICS='<MNEMONICS>' -e CHAIN_URL='wss://tfchain.dev.grid.tf/ws' -e NETWORK='dev' -e ADMINS="['<3bot_name>']" -e ALERT_EMAIL='<support_mail_address>' -e SUPPORT_PUBLIC_SSH_KEY='<public ssh key>' -e RESTIC_REPOSITORY='<RESTIC_REPOSITORY_URL>' -e RESTIC_PASSWORD='<RESTIC_REPOSITORY_PASSWORD>' -e AWS_ACCESS_KEY_ID='<MY_ACCESS_KEY_ID>' -e AWS_SECRET_ACCESS_KEY='<MY_SECRET_ACCESS_KEY>' -p 80:80 -p 443:443 threefolddev/owncloud_deployer:latest
 ```
 
- Note: Docker will create a local volume without a name. The result will be a long unique id string for the volume that contains no reference to the container it's attached to. Unless Docker is told to to remove volumes when containers are removed, these 'anonymous' volumes will remain, unlikely to be used again.
+ Note: Docker will create a local volume without a name. The result will be a long unique id string for the volume that contains no reference to the container it's attached to. Unless Docker is told to remove volumes when containers are removed, these 'anonymous' volumes will remain, unlikely to be used again.
 
 #### ENV VARS 
 ##### js-sdk env:
@@ -73,15 +78,15 @@ docker run -ti --name owncloud -e domain='<domain_name>' -e letsencryptemail='<e
 - `email_host`, `email_port`, `email_username`, `email_password`: configurations of mail server.
 - `ADMINS`: list of system admins (3bot names) that will manage requests.
 - `ALERT_EMAIL`: email which will receive wallet alerts.
-- `NO_CERT`: if set to any non-empty value, server will start without a certificate.
-- `ACME_URL`: url of the custom ACME server, otherwise letsencrypt will be used.
+- `NO_CERT`: if set to any non-empty value, the server will start without a certificate.
+- `ACME_URL`: URL of the custom ACME server, otherwise letsencrypt will be used.
 ##### Balance server env:
-- `CHAIN_URL`: url for the tfchain according to network.
+- `CHAIN_URL`: URL for the tfchain according to network.
 - `MNEMONICS`: words of the account being used to deploy from.
 
 ##### terraform and terraform client env:
 - `MNEMONICS`: words of the account being used to deploy from.
-- `NETWORK`: grid network to deploy on, one of: [dev, test, main]. default to dev.
+- `NETWORK`: grid network to deploy on, one of [dev, test, main]. default to dev.
 - `TF_SOURCE_MODULE_DIR`: the configuration directory, will be copied into the target directory before any other initialization steps are run.
 - `TF_PLUGIN_CACHE_DIR`: enable caching. optional.
 - `TF_IN_AUTOMATION`: if set to any non-empty value, Terraform adjusts its output to avoid suggesting specific commands to run next. This can make the output more consistent and less confusing. optional.
@@ -91,7 +96,7 @@ docker run -ti --name owncloud -e domain='<domain_name>' -e letsencryptemail='<e
 - `RESTIC_REPOSITORY`: The repository location where your backups will be saved. can be stored locally, or on some remote server or service. read here for more information on [restic](https://restic.readthedocs.io/en/latest/030_preparing_a_new_repo.html).
 - `RESTIC_PASSWORD`: Backup password. If you lose it, you won’t be able to access data stored in the repository.
   
-  For an Amazon S3 or S3-compatible server you will need also provide the following environment variables with the credentials you obtained while creating the bucket.
+  For an Amazon S3 or S3-compatible server, you will need also to provide the following environment variables with the credentials you obtained while creating the bucket.
 - `AWS_ACCESS_KEY_ID`
 - `AWS_SECRET_ACCESS_KEY`
 
@@ -143,7 +148,7 @@ cp docker/tf_source_module/main.tf $HOME/tf_source_module
 mkdir -p $HOME/.terraform.d/plugin-cache
 ```
 
-6 - install the node balanace server dependencies:
+6 - install the node balance server dependencies:
 ```sh
 yarn --cwd ./balance_server
 ```
@@ -165,12 +170,12 @@ export NETWORK=dev # or test
 export TF_IN_AUTOMATION=true
 ```
 
-10 - start the Node balanace server
+10 - start the Node balance server
 ```sh
 node balance_server/index.js &  # 
 ```
 
-11 - start jsng
+11 - start JSNG shell
 ```sh
 jsng
 ```
@@ -188,7 +193,7 @@ j.servers.threebot.default.packages.add(path='/root/owncloud_deployer/jumpscale/
 threebot start --local
 ```
 
-14 - Server is running at http://localhost:8080 and https://localhost:8443
+14 - The server is running at http://localhost:8080 and https://localhost:8443
 
 ### User Endpoints
 
@@ -220,27 +225,27 @@ Example response
 
 - Register new user with email if provided (optional)
 
-Example body : `{email: "someone@example.com}`
+Example body: `{email: "someone@example.com}`
 
 Responses:
 
-- If user is not registered before, you'll have `201` + successful msg
-- If user is registered before, you'll get `409` + error msg
+- If the user is not registered before, you'll have `201` + successful msg
+- If the user is registered before, you'll get `409` + error msg
 
 ##### `/owncloud/api/deployment` [POST] (admin only)
 
 - for Support to deploy instances for users and mark them as done
 
-- Example body : `[waleedhammam]`
+- Example body: `[waleedhammam]`
 
 Responses:
 
-- If success, you'll have `200` + successful msg
-- If error, you'll have error code + error msg
+- If succeded, you'll have `200` + successful msg
+- If error, you'll have an error code + error msg
 
 ##### `/owncloud/api/balance` [GET] (admin only)
 
-- Get current balance
+- Get the current balance
 
 Example response
 
@@ -252,7 +257,7 @@ Example response
 
 ##### `/owncloud/api/requests/export` [GET] (admin only)
 
-- Download a copy of all registered users as csv
+- Download a copy of all registered users as CSV
 
 ### Advanced Usage
 refer to [docs/](docs/)
