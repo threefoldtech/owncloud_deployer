@@ -36,7 +36,7 @@
             If you prefer to receive emails on a different address, fill in
             below
           </p>
-          <v-form ref="form" v-model="valid" lazy-validation>
+          <v-form ref="form" v-model="valid">
             <v-text-field
               v-model="email"
               :rules="emailRules"
@@ -45,7 +45,7 @@
 
             <v-checkbox
               v-model="checkbox"
-              :rules="[(v) => !!v || 'You must agree to continue!']"
+              :rules="[v => !!v || 'You must agree to continue!']"
               label="I have read and I accept the terms and conditions"
               required
             ></v-checkbox>
@@ -97,7 +97,7 @@ export default {
         /^\S+@\b((?=[a-z0-9-]{1,63}\.)(xn--)?[a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,63}\b$/.test(v) ||
         "E-mail must be valid",
     ],
-    checkbox: null,
+    checkbox: false,
     dialog: false,
     message: "",
   }),
