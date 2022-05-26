@@ -1,7 +1,6 @@
 # Owncloud Deployer (OCD)
 
-a provisioning portal for [Owncloud](https://owncloud.com/)  and automation cloud tool based on js-sdk and Terraform, enables the DevOps team to automate the OC VM provisioning on the Threefold revolutionary grid, handle users
-requests and manage deployments lifecycle in an efficient way.
+The threefold provisioning portal for [Owncloud](https://owncloud.com/) and automation cloud tool based on js-sdk and Terraform, enables the DevOps team to automate the Owncloud VM provisioning on the Threefold revolutionary grid, handle users requests and manage deployments lifecycle in an automated and efficient way.
 
 Users can experience the Owncloud product on the ThreeFold grid as a freemium for a 3-months trial.
 
